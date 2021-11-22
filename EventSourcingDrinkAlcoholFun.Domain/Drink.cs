@@ -8,7 +8,11 @@ namespace EventSourcingDrinkAlcoholFun.Domain
         [Key]
         public int Id { get; set; }
 
+        public Guid UniqueId { get; set; }
+        
         public DrinkStatus Status { get; set; }
+
+        public string ToWho { get; set; }
 
         public ICollection<Ingredient> Ingredients { get; set; }
 
@@ -16,7 +20,10 @@ namespace EventSourcingDrinkAlcoholFun.Domain
         {
             Ingredients = new List<Ingredient>();
             Status = DrinkStatus.Creating;
+            UniqueId = Guid.NewGuid();
         }
+
+       
     }
 
     public enum DrinkStatus

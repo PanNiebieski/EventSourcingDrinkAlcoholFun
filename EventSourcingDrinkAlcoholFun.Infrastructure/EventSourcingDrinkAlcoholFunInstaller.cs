@@ -24,6 +24,7 @@ namespace EventSourcingDrinkAlcoholFun.Infrastructure
             services.AddScoped(typeof(IAsyncRepository<>), typeof(BaseRepository<>));
             services.AddScoped<IDrinkRepository, DrinkRepository>();
             services.AddScoped<IIngredientRepository, IngredientRepository>();
+            services.AddScoped<ITableManager, TableManager>();
 
             return services;
         }

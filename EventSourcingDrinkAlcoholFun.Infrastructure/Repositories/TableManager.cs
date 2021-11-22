@@ -4,16 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore
+using Microsoft.EntityFrameworkCore;
 
 namespace EventSourcingDrinkAlcoholFun.Infrastructure.Repositories
 {
-    public class DataBaseMenager : IDataBaseMenager
+    public class TableManager : ITableManager
     {
         protected readonly DrinkContext _dbContext;
 
 
-        public DataBaseMenager(DrinkContext dbContext)
+        public TableManager(DrinkContext dbContext)
         {
             _dbContext = dbContext;
         }
@@ -22,7 +22,6 @@ namespace EventSourcingDrinkAlcoholFun.Infrastructure.Repositories
         {
             string sql = "DELETE FROM IngredientsInGlassDrink;" +
                 "DELETE FROM Drinks;" +
-                "DELETE FROM Ingredients;" +
                 "DELETE FROM sqlite_sequence;";
 
             await _dbContext.Database.ExecuteSqlRawAsync(sql);

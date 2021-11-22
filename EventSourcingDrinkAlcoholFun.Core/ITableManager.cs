@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EventSourcingDrinkAlcoholFun.Core
 {
-    public interface IDataBaseMenager
+    public interface ITableManager
     {
         Task DeleteAllRecordsInTables();
     }
