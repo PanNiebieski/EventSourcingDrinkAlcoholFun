@@ -3,7 +3,22 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31815.197
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventSourcingDrinkAlcoholFun", "EventSourcingDrinkAlcoholFun\EventSourcingDrinkAlcoholFun.csproj", "{903A6FCE-49BF-4982-A57C-EA14B3BB658F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventSourcingDrinkAlcoholFun", "EventSourcingDrinkAlcoholFun\EventSourcingDrinkAlcoholFun.csproj", "{903A6FCE-49BF-4982-A57C-EA14B3BB658F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventSourcingDrinkAlcoholFun.Domain", "EventSourcingDrinkAlcoholFun.Domain\EventSourcingDrinkAlcoholFun.Domain.csproj", "{042B02A8-21FC-41B9-8B3A-BA49123C28AF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{78CBA9D8-03A3-4A21-A816-3CB567CE5686}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{C07A8CD8-10A0-47C5-90F9-3256976FFA97}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventSourcingDrinkAlcoholFun.Infrastructure", "EventSourcingDrinkAlcoholFun.Infrastructure\EventSourcingDrinkAlcoholFun.Infrastructure.csproj", "{1CB658B1-6D5B-4462-82D1-DA16D23C1392}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventSourcingDrinkAlcoholFun.Core", "EventSourcingDrinkAlcoholFun.Core\EventSourcingDrinkAlcoholFun.Core.csproj", "{64131CFA-D8B0-4703-BFAD-2581A2DC8462}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3929D4D9-7D37-416B-8FB5-B45919BB36FE}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,9 +30,26 @@ Global
 		{903A6FCE-49BF-4982-A57C-EA14B3BB658F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{903A6FCE-49BF-4982-A57C-EA14B3BB658F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{903A6FCE-49BF-4982-A57C-EA14B3BB658F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{042B02A8-21FC-41B9-8B3A-BA49123C28AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{042B02A8-21FC-41B9-8B3A-BA49123C28AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{042B02A8-21FC-41B9-8B3A-BA49123C28AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{042B02A8-21FC-41B9-8B3A-BA49123C28AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CB658B1-6D5B-4462-82D1-DA16D23C1392}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CB658B1-6D5B-4462-82D1-DA16D23C1392}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CB658B1-6D5B-4462-82D1-DA16D23C1392}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CB658B1-6D5B-4462-82D1-DA16D23C1392}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64131CFA-D8B0-4703-BFAD-2581A2DC8462}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64131CFA-D8B0-4703-BFAD-2581A2DC8462}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64131CFA-D8B0-4703-BFAD-2581A2DC8462}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64131CFA-D8B0-4703-BFAD-2581A2DC8462}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{042B02A8-21FC-41B9-8B3A-BA49123C28AF} = {78CBA9D8-03A3-4A21-A816-3CB567CE5686}
+		{1CB658B1-6D5B-4462-82D1-DA16D23C1392} = {C07A8CD8-10A0-47C5-90F9-3256976FFA97}
+		{64131CFA-D8B0-4703-BFAD-2581A2DC8462} = {78CBA9D8-03A3-4A21-A816-3CB567CE5686}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {82EDA1B6-AF41-4107-927C-48514DCC3EFF}

@@ -361,3 +361,11 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/.vshistory/EventSourcingDrinkAlcoholFun.sln
+/EventSourcingDrinkAlcoholFun/.vshistory
+/EventSourcingDrinkAlcoholFun.Core/.vshistory
+/EventSourcingDrinkAlcoholFun.Domain/.vshistory
+/EventSourcingDrinkAlcoholFun.Infrastructure/.vshistory
+/EventSourcingDrinkAlcoholFun.Infrastructure/DummyData/.vshistory/DummyIngredients.cs
+/EventSourcingDrinkAlcoholFun.Infrastructure/Repositories/.vshistory/BaseRepository.cs
+/EventSourcingDrinkAlcoholFun.Infrastructure/Repositories/.vshistory
