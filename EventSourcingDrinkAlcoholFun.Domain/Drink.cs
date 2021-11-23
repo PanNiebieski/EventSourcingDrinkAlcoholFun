@@ -25,7 +25,6 @@ namespace EventSourcingDrinkAlcoholFun.Domain
 
         public ICollection<Ingredient> Ingredients { get; set; }
 
-        public void AddIngredients
 
         public Drink()
         {
