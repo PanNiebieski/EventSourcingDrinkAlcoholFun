@@ -9,7 +9,8 @@ namespace EventSourcingDrinkAlcoholFun.DomainEvents.Drinks
 {
     public class ReverseEvent : DomainEvent
     {
-        public new ReverseEventData Data { get; set; }
+        public new ReverseEventData Data { get; init; } = 
+            new ReverseEventData();
 
         public ReverseEvent(List<DomainEvent> events,
             Guid id, int version): base()

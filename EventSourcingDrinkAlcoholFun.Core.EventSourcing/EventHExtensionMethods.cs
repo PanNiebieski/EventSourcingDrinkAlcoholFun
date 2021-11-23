@@ -66,7 +66,7 @@ namespace EventSourcingDrinkAlcoholFun.Core.EventSourcing
                 ToWhoChangedEvent(_, _, var towhoBefore) =>
                     drink!.ChangeToWho(towhoBefore),
 
-                GlassDoneEvent => drink.GlassDone(),
+                GlassDoneEvent => drink.GlassUnDone(),
                 ReverseEvent(_, var events) => drink!.When(events),
             };
 

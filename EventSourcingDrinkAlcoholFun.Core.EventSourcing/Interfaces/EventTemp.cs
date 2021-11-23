@@ -17,5 +17,26 @@ namespace EventSourcingDrinkAlcoholFun.Core.EventSourcing.Interfaces
         public string TimeStamp { get; set; }
 
         public string Version_SerialNumber { get; set; }
+
+        public override bool Equals(object other)
+        {
+            EventTemp mod = other as EventTemp;
+
+            if (mod != null)
+            {
+                return Key_StreamId == mod.Key_StreamId;
+            }
+                return base.Equals(other);
+
+          
+        }
+
+
+        public override int GetHashCode()
+        {
+
+                return Key_StreamId.GetHashCode(); 
+
+        }
     }
 }

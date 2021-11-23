@@ -66,71 +66,22 @@ while (command != 'q')
     else if (command == '6')
         await ClearDatabase(tableManager);
     else if (command == '7')
-    {
-        var rawevents = await eventRepository.GetRawAllEvents();
-
-        var grouped = rawevents.GroupBy(k => k.Key_StreamId);
-
-        foreach (var g in grouped)
-        {
-            WriteLine(g.Key);
-            WriteLine("======================");
-            WriteLine("");
-            foreach (var eventTemp in g)
-            {
-                WriteLine(eventTemp.Value_Data);
-            }
-            WriteLine("");
-            WriteLine("======================");
-            WriteLine("");
-        }
-        ReadKey();
-    }
+        await ShowEventsOnTheDrinks();
     else if (command == '8')
-    {
-        var rawevents = await eventRepository.GetRawAllEvents();
-        var aggregateKeys = rawevents.Select
-            (k => AggregateKey.FromGuid(Guid.Parse(k.Key_StreamId)));
-
-        foreach (var key in aggregateKeys)
-        {
-            var drinkAgg = await eventRepository.Get<DrinkAggregate>(key);
-
-            var check = await drinkRepository.GetByUniqueIdAsync(drinkAgg.Drink.UniqueId);
-
-            if (check == null)
-            {
-                await drinkRepository.AddAsync(drinkAgg.Drink);
-                WriteLine($"Added projection {drinkAgg.Drink.UniqueId}");
-            }
-            else
-            {
-                //WriteLine("Press 'y' if you want to do updated base on projection");
-                //if (ReadKey().KeyChar == 'y')
-                //{
-                //    check.Ingredients = drinkAgg.Drink.Ingredients;
-                //    check.ToWho = drinkAgg.Drink.ToWho;
-                //    check.Status = drinkAgg.Drink.Status;
-
-                //    await drinkRepository.UpdateAsync(drinkAgg.Drink);
-                //    WriteLine($"Updated projection {drinkAgg.Drink.UniqueId}");
-                //}
-            }
-        }
-        ReadKey();
-
-    }
+        await RestoreDataBaseFromEvents();
     else if (command == '9')
     {
         var rawevents = await eventRepository.GetRawAllEvents();
-        var aggregateKeys = rawevents.Select
+        var aggregateKeys = rawevents.Distinct().Select
             (k => AggregateKey.FromGuid(Guid.Parse(k.Key_StreamId))).ToList();
 
         WriteLine($"Choose Key");
-        foreach (var item in aggregateKeys)
+
+        for (int i = 0; i < aggregateKeys.Count(); i++)
         {
-            WriteLine($"0 {item}");
+            WriteLine($"{i} {aggregateKeys[i].Id}");
         }
+
 
         string r = ReadLine();
 
@@ -138,10 +89,21 @@ while (command != 'q')
         {
             var key = aggregateKeys[numberchoosen];
 
-            var drinkAgg = 
+            var drinkAgg =
                 await eventRepository.Get<DrinkAggregate>(key);
             WriteLine("======================");
             WriteLine("How many steps do you want to go back");
+            WriteLine("");
+            int AA = drinkAgg.Changes.Count();
+
+            foreach (var item in drinkAgg.Changes)
+            {
+                AA = AA - 1;
+                WriteLine($"Step {AA} to remove {item.GetType()} : SerialNoVersion -> {item.Version_SerialNumber}");
+            }
+
+            WriteLine($"You have {drinkAgg.Changes.Count()} event");
+
 
             string r2 = ReadLine();
 
@@ -158,12 +120,27 @@ while (command != 'q')
                 }
                 else
                 {
-                    check.Ingredients = drinkAgg.Drink.Ingredients;
-                    check.ToWho = drinkAgg.Drink.ToWho;
-                    check.Status = drinkAgg.Drink.Status;
+                    //problem?
 
-                    await drinkRepository.UpdateAsync(drinkAgg.Drink);
-                    WriteLine($"Updated projection {drinkAgg.Drink.UniqueId}");
+                    try
+                    {
+                        //check.Ingredients = drinkAgg.Drink.Ingredients;
+                        check.ToWho = drinkAgg.Drink.ToWho;
+                        check.Status = drinkAgg.Drink.Status;
+
+                        await drinkRepository.UpdateAsync(drinkAgg.Drink);
+                        WriteLine($"Updated projection {drinkAgg.Drink.UniqueId}");
+                    }
+                    catch (Exception ex )
+                    {
+
+                        WriteLine($"{ex.Message}");
+                    }
+                    finally
+                    {
+                        await eventRepository.Save(drinkAgg);
+                    }
+
                 }
             }
             else
@@ -190,7 +167,7 @@ while (command != 'q')
         drinkAggregate.AddedIngredient(newdrink.UniqueId, ingidients[0]);
         drinkAggregate.RemovedIngredient(newdrink.UniqueId, ingidients[0]);
         drinkAggregate.AddedIngredient(newdrink.UniqueId, ingidients[1]);
-        drinkAggregate.ToWhoChanged(newdrink.UniqueId,"Cezary", "");
+        drinkAggregate.ToWhoChanged(newdrink.UniqueId, "Cezary", "");
         drinkAggregate.ToWhoChanged(newdrink.UniqueId, "Daniel", "Cezary");
         drinkAggregate.GlassDone(newdrink.UniqueId);
 
@@ -400,6 +377,64 @@ async Task ClearDatabase(ITableManager tableManager)
     {
         await tableManager.DeleteAllRecordsInTables();
     }
+}
+
+async Task ShowEventsOnTheDrinks()
+{
+    var rawevents = await eventRepository.GetRawAllEvents();
+
+    var grouped = rawevents.GroupBy(k => k.Key_StreamId);
+
+    foreach (var g in grouped)
+    {
+        WriteLine(g.Key);
+        WriteLine("======================");
+        WriteLine("");
+        foreach (var eventTemp in g)
+        {
+            WriteLine(eventTemp.Value_Data);
+        }
+        WriteLine("");
+        WriteLine("");
+        WriteLine("");
+    }
+    ReadKey();
+}
+
+
+async Task RestoreDataBaseFromEvents()
+{
+    var rawevents = await eventRepository.GetRawAllEvents();
+    var aggregateKeys = rawevents.Select
+        (k => AggregateKey.FromGuid(Guid.Parse(k.Key_StreamId)));
+
+    foreach (var key in aggregateKeys)
+    {
+        var drinkAgg = await eventRepository.Get<DrinkAggregate>(key);
+
+        var check = await drinkRepository.GetByUniqueIdAsync(drinkAgg.Drink.UniqueId);
+
+        if (check == null)
+        {
+            await drinkRepository.AddAsync(drinkAgg.Drink);
+            WriteLine($"Added projection {drinkAgg.Drink.UniqueId}");
+        }
+        else
+        {
+            //WriteLine("Press 'y' if you want to do updated base on projection");
+            //if (ReadKey().KeyChar == 'y')
+            //{
+            //    check.Ingredients = drinkAgg.Drink.Ingredients;
+            //    check.ToWho = drinkAgg.Drink.ToWho;
+            //    check.Status = drinkAgg.Drink.Status;
+
+            //    await drinkRepository.UpdateAsync(drinkAgg.Drink);
+            //    WriteLine($"Updated projection {drinkAgg.Drink.UniqueId}");
+            //}
+        }
+    }
+    ReadKey();
+
 }
 
 

@@ -74,7 +74,9 @@ namespace EventSourcingDrinkAlcoholFun.Core.EventSourcing
                 {
                     List<DomainEvent> reverseEvents = new List<DomainEvent>();
 
-                    for (int i = _changes.Count; i >= step; i--)
+                    var f = _changes.Count  - step;
+
+                    for (int i = _changes.Count - 1; i >= f; i--)
                     {
                         var @event = _changes[i];
                         //ReverseChange(@event);
