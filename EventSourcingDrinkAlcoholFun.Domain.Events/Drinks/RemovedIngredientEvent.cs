@@ -10,13 +10,14 @@ namespace EventSourcingDrinkAlcoholFun.DomainEvents.Drinks
 {
     public class RemovedIngredientEvent : DomainEvent
     {
-        public Ingredient Ingredient { get; set; }
+        public new RemovedIngredientEventData Data { get; init; } 
+            = new RemovedIngredientEventData();
 
         public RemovedIngredientEvent(Ingredient ingredient,
             Guid id, int version)
             : base()
         {
-            Ingredient = ingredient;
+            Data.Ingredient = ingredient;
             Key_StreamId = AggregateKey.FromGuid(id);
             Version_SerialNumber = version;
         }
@@ -25,7 +26,12 @@ namespace EventSourcingDrinkAlcoholFun.DomainEvents.Drinks
             out Ingredient ingredient)
         {
             uniqueId = Key_StreamId.Id;
-            ingredient = Ingredient;
+            ingredient = Data.Ingredient;
         }
+    }
+
+    public class RemovedIngredientEventData : DomainEventData
+    {
+        public Ingredient Ingredient { get; set; }
     }
 }

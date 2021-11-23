@@ -31,6 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\EventSourcingDrinkAlcoholFun.Infrastructure.EventStore\EventSourcingDrinkAlcoholFun.Infrastructure.EventStore.csproj" />
     <ProjectReference Include="..\EventSourcingDrinkAlcoholFun.Infrastructure\EventSourcingDrinkAlcoholFun.Infrastructure.DataAccess.csproj" />
   </ItemGroup>
 
@@ -44,6 +45,14 @@
     <None Update="DataBases\DrinksDataBases.db">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
+    <None Update="DataBases\EventStore.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Commands\" />
+    <Folder Include="Queries\" />
   </ItemGroup>
 
 </Project>

@@ -15,7 +15,5 @@ namespace EventSourcingDrinkAlcoholFun.DomainEvents.Drinks
             Key_StreamId = AggregateKey.FromGuid(id);
             Version_SerialNumber = version;
         }
-
-
     }
 }

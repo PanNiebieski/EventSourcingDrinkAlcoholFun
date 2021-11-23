@@ -17,7 +17,7 @@ namespace EventSourcingDrinkAlcoholFun.Domain
         [Key]
         public int Id { get; set; }
 
-        public Guid UniqueId { get; init; }
+        public Guid UniqueId { get; set; }
 
         public DrinkStatus Status { get; set; }
 

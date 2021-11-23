@@ -28,5 +28,11 @@ namespace EventSourcingDrinkAlcoholFun.Infrastructure
         {
             return await _dbContext.Set<Drink>().FindAsync(id);
         }
+
+        public async Task<Drink> GetByUniqueIdAsync(Guid id)
+        {
+            return await _dbContext.Set<Drink>().
+                FirstOrDefaultAsync(k => k.UniqueId == id);
+        }
     }
 }

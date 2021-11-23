@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -31,6 +32,8 @@ namespace EventSourcingDrinkAlcoholFun.Domain
 
         public decimal Price { get; set; }
 
+ 
+        [JsonIgnore]
         public ICollection<Drink> UseInDrinks { get; set; }
     }
 

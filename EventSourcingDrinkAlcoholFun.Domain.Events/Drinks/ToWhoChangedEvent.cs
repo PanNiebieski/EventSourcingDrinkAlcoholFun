@@ -9,21 +9,33 @@ namespace EventSourcingDrinkAlcoholFun.DomainEvents.Drinks
 {
     public class ToWhoChangedEvent : DomainEvent
     {
-        public string ToWho { get; set; }
+        public new ToWhoChangedEventData Data { get; init; } 
+            = new ToWhoChangedEventData();
 
-        public ToWhoChangedEvent(string toWho,
+        public ToWhoChangedEvent(string toWhoAfter, string toWhoBefore,
     Guid id, int version)
     : base()
         {
-            ToWho = toWho;
+            Data.ToWhoAfter = toWhoAfter;
+            Data.ToWhoBefore = toWhoBefore;
             Key_StreamId = AggregateKey.FromGuid(id);
             Version_SerialNumber = version;
         }
 
-        public void Deconstruct(out Guid uniqueId, out string toWho)
+        public void Deconstruct(out Guid uniqueId, out string toWhoAfter,
+            out string toWhoBefore)
         {
             uniqueId = Key_StreamId.Id;
-            toWho = ToWho;
+            toWhoAfter = Data.ToWhoAfter;
+            toWhoBefore = Data.ToWhoBefore;
         }
     }
+
+    public class ToWhoChangedEventData : DomainEventData
+    {
+        public string ToWhoAfter { get; set; }
+
+        public string ToWhoBefore { get; set; }
+    }
+
 }

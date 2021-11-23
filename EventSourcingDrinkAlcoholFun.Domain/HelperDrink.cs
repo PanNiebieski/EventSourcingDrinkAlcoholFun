@@ -29,6 +29,13 @@
             drink.Status = DrinkStatus.Done;
             return drink;
         }
+
+        public static Drink GlassUnDone
+    (this Drink drink)
+        {
+            drink.Status = DrinkStatus.Creating;
+            return drink;
+        }
     }
 
 

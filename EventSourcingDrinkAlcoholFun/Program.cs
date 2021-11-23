@@ -1,4 +1,7 @@
-﻿var builder = new ConfigurationBuilder()
+﻿
+
+
+var builder = new ConfigurationBuilder()
     .SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile("appsettings.json");
 
@@ -6,6 +9,8 @@ var configuration = builder.Build();
 var services = new ServiceCollection();
 
 services.AddEventSourcingDrinkAlcoholFunEFServices(configuration);
+services.AddEventSourcing(configuration);
+
 var serviceProvider = services.BuildServiceProvider();
 
 var drinkRepository = serviceProvider
@@ -17,7 +22,8 @@ var ingredientRepository = serviceProvider
 var tableManager = serviceProvider
     .GetService<ITableManager>();
 
-
+var eventRepository = serviceProvider
+    .GetService<IEventRepository>();
 
 char command = 'a';
 
@@ -36,9 +42,11 @@ while (command != 'q')
     WriteLine("=========================================");
     WriteLine("7. Show me events on na drink");
     WriteLine("8. Projection from the stream of events on the drinks");
-    WriteLine("9. Do an Audit of the event stream on the drinks");
-    WriteLine("0. Travel in time with a specific drink");
+    WriteLine("9. Travel in time with a specific drink");
+    WriteLine("0. Do an Audit of the event stream on the drinks");
+
     ForegroundColor = ConsoleColor.Gray;
+    WriteLine("d. Demo of Aggreggates");
     WriteLine("q. Exit");
 
     ForegroundColor = ConsoleColor.Yellow;
@@ -57,22 +65,140 @@ while (command != 'q')
         await EndDrink(drinkRepository);
     else if (command == '6')
         await ClearDatabase(tableManager);
-    else if (command == '6')
-    {
-
-    }
     else if (command == '7')
     {
+        var rawevents = await eventRepository.GetRawAllEvents();
 
+        var grouped = rawevents.GroupBy(k => k.Key_StreamId);
+
+        foreach (var g in grouped)
+        {
+            WriteLine(g.Key);
+            WriteLine("======================");
+            WriteLine("");
+            foreach (var eventTemp in g)
+            {
+                WriteLine(eventTemp.Value_Data);
+            }
+            WriteLine("");
+            WriteLine("======================");
+            WriteLine("");
+        }
+        ReadKey();
     }
     else if (command == '8')
     {
+        var rawevents = await eventRepository.GetRawAllEvents();
+        var aggregateKeys = rawevents.Select
+            (k => AggregateKey.FromGuid(Guid.Parse(k.Key_StreamId)));
+
+        foreach (var key in aggregateKeys)
+        {
+            var drinkAgg = await eventRepository.Get<DrinkAggregate>(key);
+
+            var check = await drinkRepository.GetByUniqueIdAsync(drinkAgg.Drink.UniqueId);
+
+            if (check == null)
+            {
+                await drinkRepository.AddAsync(drinkAgg.Drink);
+                WriteLine($"Added projection {drinkAgg.Drink.UniqueId}");
+            }
+            else
+            {
+                //WriteLine("Press 'y' if you want to do updated base on projection");
+                //if (ReadKey().KeyChar == 'y')
+                //{
+                //    check.Ingredients = drinkAgg.Drink.Ingredients;
+                //    check.ToWho = drinkAgg.Drink.ToWho;
+                //    check.Status = drinkAgg.Drink.Status;
+
+                //    await drinkRepository.UpdateAsync(drinkAgg.Drink);
+                //    WriteLine($"Updated projection {drinkAgg.Drink.UniqueId}");
+                //}
+            }
+        }
+        ReadKey();
 
     }
     else if (command == '9')
     {
+        var rawevents = await eventRepository.GetRawAllEvents();
+        var aggregateKeys = rawevents.Select
+            (k => AggregateKey.FromGuid(Guid.Parse(k.Key_StreamId))).ToList();
+
+        WriteLine($"Choose Key");
+        foreach (var item in aggregateKeys)
+        {
+            WriteLine($"0 {item}");
+        }
+
+        string r = ReadLine();
+
+        if (int.TryParse(r, out int numberchoosen))
+        {
+            var key = aggregateKeys[numberchoosen];
+
+            var drinkAgg = 
+                await eventRepository.Get<DrinkAggregate>(key);
+            WriteLine("======================");
+            WriteLine("How many steps do you want to go back");
+
+            string r2 = ReadLine();
+
+            if (int.TryParse(r2, out int numberchoosen2))
+            {
+                drinkAgg.ReverseEventTimeTravel(numberchoosen2);
+
+                var check = await drinkRepository.GetByUniqueIdAsync(drinkAgg.Drink.UniqueId);
+
+                if (check == null)
+                {
+                    await drinkRepository.AddAsync(drinkAgg.Drink);
+                    WriteLine($"Added projection {drinkAgg.Drink.UniqueId}");
+                }
+                else
+                {
+                    check.Ingredients = drinkAgg.Drink.Ingredients;
+                    check.ToWho = drinkAgg.Drink.ToWho;
+                    check.Status = drinkAgg.Drink.Status;
+
+                    await drinkRepository.UpdateAsync(drinkAgg.Drink);
+                    WriteLine($"Updated projection {drinkAgg.Drink.UniqueId}");
+                }
+            }
+            else
+            {
+
+            }
+        }
+        else
+        {
+
+        }
+    }
+    else if (command == '0')
+    {
 
     }
+    else if (command == 'd')
+    {
+        var ingidients = await ingredientRepository.GetAllAsync();
+
+
+        var newdrink = new Drink();
+        DrinkAggregate drinkAggregate = new(newdrink);
+        drinkAggregate.AddedIngredient(newdrink.UniqueId, ingidients[0]);
+        drinkAggregate.RemovedIngredient(newdrink.UniqueId, ingidients[0]);
+        drinkAggregate.AddedIngredient(newdrink.UniqueId, ingidients[1]);
+        drinkAggregate.ToWhoChanged(newdrink.UniqueId,"Cezary", "");
+        drinkAggregate.ToWhoChanged(newdrink.UniqueId, "Daniel", "Cezary");
+        drinkAggregate.GlassDone(newdrink.UniqueId);
+
+        var result = await drinkRepository.AddAsync(drinkAggregate.Drink);
+
+        await eventRepository.Save<DrinkAggregate>(drinkAggregate);
+    }
+
     Clear();
 }
 
@@ -111,9 +237,15 @@ async Task ShowAllDrinksAsync(IDrinkRepository repostiory)
 
 async Task CreateDrink(IDrinkRepository repostiory)
 {
-    var d = await repostiory.AddAsync(new Drink());
+    var newdrink = new Drink();
+    DrinkAggregate drinkAggregate = new(newdrink);
+
+    var result = await repostiory.AddAsync(new Drink());
+
+    await eventRepository.Save<DrinkAggregate>(drinkAggregate);
+
     WriteLine("You start to create a drink with ID: ");
-    WriteLine(d.Id);
+    //WriteLine(result.Id);
     ReadKey();
 }
 
@@ -146,6 +278,7 @@ async Task AddingIn(IDrinkRepository drinkRepository
             table1.Write(Format.Alternative);
             WriteLine("");
             WriteLine("Here are the ingredients already in this drink:");
+            WriteLine("You can't add the same ingredient twice");
             WriteLine("");
             var table2 = new ConsoleTable("Id", "Name", "Volume", "Price");
 
@@ -161,7 +294,6 @@ async Task AddingIn(IDrinkRepository drinkRepository
             WriteLine("Enter an alphabetic character to cancel");
 
             string inIdstring = ReadLine();
-
 
             int inId;
             if (int.TryParse(inIdstring, out inId))
