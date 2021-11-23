@@ -10,3 +10,4 @@ global using EventSourcingDrinkAlcoholFun.Core.EventSourcing.Interfaces;
 
 global using EventSourcingDrinkAlcoholFun.Core.EventSourcing;
 global using EventSourcingDrinkAlcoholFun.Domain.Events;
+global using EventSourcingDrinkAlcoholFun.Infrastructure.DataAccess.Dapper;

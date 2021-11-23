@@ -1,31 +1,35 @@
-﻿using EventSourcingDrinkAlcoholFun.Core;
+﻿using Dapper;
+using EventSourcingDrinkAlcoholFun.Core;
+using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
-namespace EventSourcingDrinkAlcoholFun.Infrastructure.Repositories
+namespace EventSourcingDrinkAlcoholFun.Infrastructure.DataAccess.Dapper.Repositories
 {
     public class TableManager : ITableManager
     {
-        protected readonly DrinkContext _dbContext;
+        private IDBContext _dbContext;
 
-
-        public TableManager(DrinkContext dbContext)
+        public TableManager(IDBContext dbContext)
         {
             _dbContext = dbContext;
         }
 
+
         public async Task DeleteAllRecordsInTables()
         {
+            using var connection = new SqliteConnection
+                (_dbContext.ConnectionString);
+
             string sql = "DELETE FROM IngredientsInGlassDrink;" +
                 "DELETE FROM Drinks;" +
                 "DELETE FROM sqlite_sequence WHERE name='Drinks'" +
                 "OR name='IngredientsInGlassDrink';";
 
-            await _dbContext.Database.ExecuteSqlRawAsync(sql);
+            await connection.ExecuteAsync(sql);
         }
     }
 }

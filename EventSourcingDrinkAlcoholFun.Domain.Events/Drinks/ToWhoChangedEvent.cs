@@ -12,6 +12,8 @@ namespace EventSourcingDrinkAlcoholFun.DomainEvents.Drinks
         public new ToWhoChangedEventData Data { get; init; } 
             = new ToWhoChangedEventData();
 
+        public override int Type => 2;
+
         public ToWhoChangedEvent(string toWhoAfter, string toWhoBefore,
     Guid id, int version)
     : base()

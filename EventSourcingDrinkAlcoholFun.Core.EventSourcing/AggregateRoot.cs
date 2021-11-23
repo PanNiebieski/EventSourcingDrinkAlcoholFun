@@ -37,7 +37,7 @@ namespace EventSourcingDrinkAlcoholFun.Core.EventSourcing
         public void LoadFromHistory(IEnumerable<DomainEvent> history)
         {
             //Drink drink = null;
-
+            history = history.OrderBy(k => k.Version_SerialNumber);
             foreach (var @event in history)
             {
                 if (@event.Version_SerialNumber != Version_SerialNumber)
@@ -85,7 +85,7 @@ namespace EventSourcingDrinkAlcoholFun.Core.EventSourcing
 
                     ApplyChangeBase(
                         new ReverseEvent
-                        (reverseEvents,
+                        (reverseEvents, step,
                         Key.Id, 
                         Version_SerialNumber++), true);
                 }

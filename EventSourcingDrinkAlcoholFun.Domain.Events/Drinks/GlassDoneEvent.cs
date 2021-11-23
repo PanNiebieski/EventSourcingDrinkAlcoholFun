@@ -9,6 +9,7 @@ namespace EventSourcingDrinkAlcoholFun.DomainEvents.Drinks
 {
     public class GlassDoneEvent : DomainEvent
     {
+        public override int Type => 4;
         public GlassDoneEvent(Guid id, int version)
             : base()
         {

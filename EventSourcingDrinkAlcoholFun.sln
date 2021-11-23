@@ -31,6 +31,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventSourcingDrinkAlcoholFun.Core.EventSourcing", "EventSourcingDrinkAlcoholFun.Core.EventSourcing\EventSourcingDrinkAlcoholFun.Core.EventSourcing.csproj", "{14A2ED64-65EA-4277-B8E1-1FD7E47A088F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventSourcingDrinkAlcoholFun.Infrastructure.DataAccess.Dapper", "EventSourcingDrinkAlcoholFun.Infrastructure.DataAccess.Dapper\EventSourcingDrinkAlcoholFun.Infrastructure.DataAccess.Dapper.csproj", "{54B2CF8A-6D03-4D18-B6C5-4752B894E925}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,6 +67,10 @@ Global
 		{14A2ED64-65EA-4277-B8E1-1FD7E47A088F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{14A2ED64-65EA-4277-B8E1-1FD7E47A088F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{14A2ED64-65EA-4277-B8E1-1FD7E47A088F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54B2CF8A-6D03-4D18-B6C5-4752B894E925}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54B2CF8A-6D03-4D18-B6C5-4752B894E925}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54B2CF8A-6D03-4D18-B6C5-4752B894E925}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54B2CF8A-6D03-4D18-B6C5-4752B894E925}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -78,6 +84,7 @@ Global
 		{A7C4AA15-DE61-4BB3-A8D9-5B4213552305} = {78CBA9D8-03A3-4A21-A816-3CB567CE5686}
 		{3004034A-46A0-4D39-A383-59C0A4BC7244} = {78CBA9D8-03A3-4A21-A816-3CB567CE5686}
 		{14A2ED64-65EA-4277-B8E1-1FD7E47A088F} = {3004034A-46A0-4D39-A383-59C0A4BC7244}
+		{54B2CF8A-6D03-4D18-B6C5-4752B894E925} = {C07A8CD8-10A0-47C5-90F9-3256976FFA97}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {82EDA1B6-AF41-4107-927C-48514DCC3EFF}

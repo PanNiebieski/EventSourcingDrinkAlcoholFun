@@ -1,6 +1,8 @@
 ﻿
 
 
+
+
 var builder = new ConfigurationBuilder()
     .SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile("appsettings.json");
@@ -8,7 +10,8 @@ var builder = new ConfigurationBuilder()
 var configuration = builder.Build();
 var services = new ServiceCollection();
 
-services.AddEventSourcingDrinkAlcoholFunEFServices(configuration);
+//services.AddEFServices(configuration);
+services.AddDapperServices(configuration);
 services.AddEventSourcing(configuration);
 
 var serviceProvider = services.BuildServiceProvider();
@@ -70,89 +73,7 @@ while (command != 'q')
     else if (command == '8')
         await RestoreDataBaseFromEvents();
     else if (command == '9')
-    {
-        var rawevents = await eventRepository.GetRawAllEvents();
-        var aggregateKeys = rawevents.Distinct().Select
-            (k => AggregateKey.FromGuid(Guid.Parse(k.Key_StreamId))).ToList();
-
-        WriteLine($"Choose Key");
-
-        for (int i = 0; i < aggregateKeys.Count(); i++)
-        {
-            WriteLine($"{i} {aggregateKeys[i].Id}");
-        }
-
-
-        string r = ReadLine();
-
-        if (int.TryParse(r, out int numberchoosen))
-        {
-            var key = aggregateKeys[numberchoosen];
-
-            var drinkAgg =
-                await eventRepository.Get<DrinkAggregate>(key);
-            WriteLine("======================");
-            WriteLine("How many steps do you want to go back");
-            WriteLine("");
-            int AA = drinkAgg.Changes.Count();
-
-            foreach (var item in drinkAgg.Changes)
-            {
-                AA = AA - 1;
-                WriteLine($"Step {AA} to remove {item.GetType()} : SerialNoVersion -> {item.Version_SerialNumber}");
-            }
-
-            WriteLine($"You have {drinkAgg.Changes.Count()} event");
-
-
-            string r2 = ReadLine();
-
-            if (int.TryParse(r2, out int numberchoosen2))
-            {
-                drinkAgg.ReverseEventTimeTravel(numberchoosen2);
-
-                var check = await drinkRepository.GetByUniqueIdAsync(drinkAgg.Drink.UniqueId);
-
-                if (check == null)
-                {
-                    await drinkRepository.AddAsync(drinkAgg.Drink);
-                    WriteLine($"Added projection {drinkAgg.Drink.UniqueId}");
-                }
-                else
-                {
-                    //problem?
-
-                    try
-                    {
-                        //check.Ingredients = drinkAgg.Drink.Ingredients;
-                        check.ToWho = drinkAgg.Drink.ToWho;
-                        check.Status = drinkAgg.Drink.Status;
-
-                        await drinkRepository.UpdateAsync(drinkAgg.Drink);
-                        WriteLine($"Updated projection {drinkAgg.Drink.UniqueId}");
-                    }
-                    catch (Exception ex )
-                    {
-
-                        WriteLine($"{ex.Message}");
-                    }
-                    finally
-                    {
-                        await eventRepository.Save(drinkAgg);
-                    }
-
-                }
-            }
-            else
-            {
-
-            }
-        }
-        else
-        {
-
-        }
-    }
+        await TimeTravel();
     else if (command == '0')
     {
 
@@ -405,7 +326,7 @@ async Task ShowEventsOnTheDrinks()
 async Task RestoreDataBaseFromEvents()
 {
     var rawevents = await eventRepository.GetRawAllEvents();
-    var aggregateKeys = rawevents.Select
+    var aggregateKeys = rawevents.Distinct().OrderByDescending(a => a.Id).Select
         (k => AggregateKey.FromGuid(Guid.Parse(k.Key_StreamId)));
 
     foreach (var key in aggregateKeys)
@@ -416,8 +337,28 @@ async Task RestoreDataBaseFromEvents()
 
         if (check == null)
         {
-            await drinkRepository.AddAsync(drinkAgg.Drink);
-            WriteLine($"Added projection {drinkAgg.Drink.UniqueId}");
+            try
+            {
+                var ing = await ingredientRepository.GetAllAsync();
+
+                List<Ingredient> ingredients = new List<Ingredient>();
+                foreach (var item in drinkAgg.Drink.Ingredients)
+                {
+                    var finded = ing.FirstOrDefault(k => k.Id == item.Id);
+                    if (finded != null)
+                        ingredients.Add(finded);
+                }
+
+                drinkAgg.Drink.Ingredients = ingredients;
+                await drinkRepository.AddAsync(drinkAgg.Drink);
+                WriteLine($"Added projection {drinkAgg.Drink.UniqueId}");
+            }
+            catch (Exception ex)
+            {
+                WriteLine($"Error  {drinkAgg.Drink.UniqueId}");
+
+            }
+  
         }
         else
         {
@@ -435,6 +376,96 @@ async Task RestoreDataBaseFromEvents()
     }
     ReadKey();
 
+}
+
+async Task TimeTravel()
+{
+    var rawevents = await eventRepository.GetRawAllEvents();
+    var aggregateKeys = rawevents.Distinct().Select
+        (k => AggregateKey.FromGuid(Guid.Parse(k.Key_StreamId))).ToList();
+
+    WriteLine($"Choose Key");
+
+    for (int i = 0; i < aggregateKeys.Count(); i++)
+    {
+        WriteLine($"{i} {aggregateKeys[i].Id}");
+    }
+
+    string r = ReadLine();
+
+    if (int.TryParse(r, out int choosenIndex))
+    {
+        var key = aggregateKeys[choosenIndex];
+
+        var drinkAgg =
+            await eventRepository.Get<DrinkAggregate>(key);
+        WriteLine("======================");
+        WriteLine("How many steps do you want to go back");
+        WriteLine("");
+
+        int AA = 0;
+
+        WriteLine($"You have {drinkAgg.Changes.Count()} event");
+        WriteLine("");
+
+        for (int i = drinkAgg.Changes.Count - 1; i >= 0; i--)
+        {
+            AA = AA + 1;
+            var change = drinkAgg.Changes[i];
+            WriteLine($"Step {AA} to remove {change.GetType().Name} : SerialNoVersion -> {change.Version_SerialNumber}");
+        }
+
+        string r2 = ReadLine();
+
+        if (int.TryParse(r2, out int choosenNumberOfSteps))
+        {
+            drinkAgg.ReverseEventTimeTravel(choosenNumberOfSteps);
+
+            var check = await drinkRepository.GetByUniqueIdAsync(drinkAgg.Drink.UniqueId);
+
+            if (check == null)
+            {
+                await drinkRepository.AddAsync(drinkAgg.Drink);
+                WriteLine($"Added projection {drinkAgg.Drink.UniqueId}");
+            }
+            else
+            {
+                try
+                {
+                    check.Ingredients = drinkAgg.Drink.Ingredients;
+                    check.ToWho = drinkAgg.Drink.ToWho;
+                    check.Status = drinkAgg.Drink.Status;
+
+                    await drinkRepository.UpdateAsync(check);
+                    WriteLine($"Updated projection {drinkAgg.Drink.UniqueId}");
+
+                    await eventRepository.Save(drinkAgg);
+                    WriteLine($"EventRepository Saved");
+                    ReadKey();
+                }
+                catch (Exception ex)
+                {
+                    ForegroundColor = ConsoleColor.Red;
+                    WriteLine($"{ex.Message}");
+                    ForegroundColor = ConsoleColor.Yellow;
+                }
+
+            }
+        }
+        else
+            WritePareError();
+    }
+    else
+        WritePareError();
+
+
+}
+
+
+void WritePareError()
+{
+    WriteLine("This isn't a number");
+    ReadKey();
 }
 
 

@@ -5,6 +5,7 @@
         public static Drink AddIngredient
             (this Drink drink, Ingredient ingredient)
         {
+            ingredient.ToInsert = true;
             drink.Ingredients.Add(ingredient);
             return drink;
         }

@@ -10,6 +10,7 @@ namespace EventSourcingDrinkAlcoholFun.DomainEvents.Drinks
 {
     public class RemovedIngredientEvent : DomainEvent
     {
+        public override int Type => 3;
         public new RemovedIngredientEventData Data { get; init; } 
             = new RemovedIngredientEventData();
 

@@ -14,7 +14,7 @@ namespace EventSourcingDrinkAlcoholFun.Infrastructure
     public static class EventSourcingDrinkAlcoholFunInstaller
     {
 
-        public static IServiceCollection AddEventSourcingDrinkAlcoholFunEFServices(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddEFServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<DrinkContext>(options =>
                 options.UseSqlite(configuration.

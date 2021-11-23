@@ -25,11 +25,14 @@ namespace EventSourcingDrinkAlcoholFun.Domain
 
         public ICollection<Ingredient> Ingredients { get; set; }
 
+        public void AddIngredients
+
         public Drink()
         {
             Ingredients = new List<Ingredient>();
             Status = DrinkStatus.Creating;
             UniqueId = Guid.NewGuid();
+            ToWho = "";
         }
 
 
@@ -38,6 +41,7 @@ namespace EventSourcingDrinkAlcoholFun.Domain
             Ingredients = new List<Ingredient>();
             Status = DrinkStatus.Creating;
             UniqueId = uniqueId;
+            ToWho = "";
         }
 
 

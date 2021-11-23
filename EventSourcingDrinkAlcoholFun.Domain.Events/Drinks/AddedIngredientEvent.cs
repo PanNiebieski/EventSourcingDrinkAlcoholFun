@@ -5,6 +5,7 @@ namespace EventSourcingDrinkAlcoholFun.DomainEvents
 {
     public class AddedIngredientEvent : DomainEvent
     {
+        public override int Type => 1;
         public new AddedIngredientEventData Data { get; init; } 
               = new AddedIngredientEventData();
 

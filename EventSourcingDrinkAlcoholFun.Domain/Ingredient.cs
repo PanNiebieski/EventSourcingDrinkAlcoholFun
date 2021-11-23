@@ -2,13 +2,15 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace EventSourcingDrinkAlcoholFun.Domain
 {
-    public class Ingredient : AuditableEntity
+    public class Ingredient : AuditableEntity,
+        IEquatable<Ingredient>
     {
 
         public Ingredient()
@@ -32,9 +34,26 @@ namespace EventSourcingDrinkAlcoholFun.Domain
 
         public decimal Price { get; set; }
 
- 
+        [JsonIgnore]
+        [NotMapped]
+        public bool ToInsert { get; set; }
+
+
+
+
         [JsonIgnore]
         public ICollection<Drink> UseInDrinks { get; set; }
+
+        public bool Equals(Ingredient? other)
+        {
+            Ingredient mod = other as Ingredient;
+
+            if (mod != null)
+            {
+                return Id == mod.Id;
+            }
+            return base.Equals(other);
+        }
     }
 
 

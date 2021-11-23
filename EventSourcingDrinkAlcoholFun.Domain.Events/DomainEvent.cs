@@ -17,8 +17,8 @@
 
     public abstract class DomainEvent
     {
-        public DomainEventData Data { get; init; } 
-            = new DomainEventData();
+        //public DomainEventData Data { get; init; } 
+        //    = new DomainEventData();
 
         public AggregateKey? Key_StreamId { get; set; }
         public int Version_SerialNumber { get; set; } = 0;
@@ -28,6 +28,8 @@
         {
             TimeStamp = DateTimeOffset.UtcNow;
         }
+
+        public abstract int Type { get; }
     }
 
     public class DomainEventData

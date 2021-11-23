@@ -9,6 +9,7 @@ namespace EventSourcingDrinkAlcoholFun.DomainEvents
 {
     public class EmptyGlassInitializedEvent : DomainEvent
     {
+        public override int Type => 0;
         public EmptyGlassInitializedEvent
             (Guid uniqueId) : base()
         {
