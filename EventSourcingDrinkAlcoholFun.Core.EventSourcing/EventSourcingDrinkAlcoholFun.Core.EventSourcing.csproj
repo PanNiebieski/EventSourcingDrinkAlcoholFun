@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\EventSourcingDrinkAlcoholFun.Domain.Events\EventSourcingDrinkAlcoholFun.DomainEvents.csproj" />
+    <ProjectReference Include="..\EventSourcingDrinkAlcoholFun.Domain\EventSourcingDrinkAlcoholFun.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -15,5 +15,10 @@ namespace EventSourcingDrinkAlcoholFun.DomainEvents
             Key_StreamId = AggregateKey.FromGuid(uniqueId);
             TimeStamp = DateTimeOffset.Now;
         }
+
+        public void Deconstruct(out Guid uniqueId)
+        {
+            uniqueId = Key_StreamId.Id;
+        }
     }
 }

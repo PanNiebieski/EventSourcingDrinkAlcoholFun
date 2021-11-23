@@ -10,6 +10,10 @@
             return new AggregateKey() { Id = id};
         }
 
-
+        public static Guid ToGuid
+            (AggregateKey key)
+        {
+            return key.Id;
+        }
     }
 }

@@ -30,7 +30,7 @@ namespace EventSourcingDrinkAlcoholFun.Infrastructure
                 switch (entry.State)
                 {
                     case EntityState.Added:
-                        entry.Entity.CreatedAt = DateTime.Now;
+                        //entry.Entity.CreatedAt = DateTime.Now;
                         break;
                     case EntityState.Modified:
                         //entry.Entity.LastModifiedDate = DateTime.Now;

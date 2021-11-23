@@ -8,17 +8,24 @@ using System.Threading.Tasks;
 
 namespace EventSourcingDrinkAlcoholFun.DomainEvents.Drinks
 {
-    public class RemoveIngredientEvent : DomainEvent
+    public class RemovedIngredientEvent : DomainEvent
     {
         public Ingredient Ingredient { get; set; }
 
-        public RemoveIngredientEvent(Ingredient ingredient,
+        public RemovedIngredientEvent(Ingredient ingredient,
             Guid id, int version)
             : base()
         {
             Ingredient = ingredient;
             Key_StreamId = AggregateKey.FromGuid(id);
             Version_SerialNumber = version;
+        }
+
+        public void Deconstruct(out Guid uniqueId,
+            out Ingredient ingredient)
+        {
+            uniqueId = Key_StreamId.Id;
+            ingredient = Ingredient;
         }
     }
 }

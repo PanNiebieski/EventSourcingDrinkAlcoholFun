@@ -13,94 +13,53 @@ namespace EventSourcingDrinkAlcoholFun.Infrastructure.DummyData
         {
             List<Ingredient> p = new List<Ingredient>();
 
-            Ingredient i1 = new Ingredient()
-            {
-                Id = 1,
-                Name = "Vodka",
-                Volume = 40,
-                Price = 5.2m,
-            };
+            Ingredient i1 = new 
+                (1, "Vodka",
+                40, 5.2m);
 
-            Ingredient i2 = new Ingredient()
-            {
-                Id = 2,
-                Name = "Sprite",
-                Volume = 300,
-                Price = 5.2m,
-            };
+            Ingredient i2 = new 
+                (2, "Sprite",
+                300, 5.2m);
 
-            Ingredient i3 = new Ingredient()
-            {
-                Id = 3,
-                Name = "Coca-Cola",
-                Volume = 300,
-                Price = 6.0m,
-            };
+            Ingredient i3 =
+                new 
+                (3, "Coca-Cola",
+                300, 6.0m);
 
-            Ingredient i4 = new Ingredient()
-            {
-                Id = 4,
-                Name = "Kahlua Coffee Liqueur",
-                Volume = 20,
-                Price = 2.1m,
-            };
+            Ingredient i4 = new 
+                (4, "Kahlua Coffee Liqueur",
+                20, 2.1m);
 
-            Ingredient i5 = new Ingredient()
-            {
-                Id = 5,
-                Name = "Ice Cubes",
-                Volume = 30,
-                Price = 0.1m,
-            };
+            Ingredient i5 =
+                new 
+                (5, "Ice Cubes",
+                30, 0.1m);
 
-            Ingredient i6 = new Ingredient()
-            {
-                Id = 6,
-                Name = "Orange Juice",
-                Volume = 80,
-                Price = 1.0m,
-            };
+            Ingredient i6 = new 
+                (6, "Orange Juice",
+                80, 1.0m);
 
-            Ingredient i7 = new Ingredient()
-            {
-                Id = 7,
-                Name = "Cream",
-                Volume = 20,
-                Price = 0.5m,
-            };
-
-            Ingredient i8 = new Ingredient()
-            {
-                Id = 8,
-                Name = "Peach Liqueur",
-                Volume = 40,
-                Price = 3.8m,
-            };
-
-            Ingredient i9 = new Ingredient()
-            {
-                Id = 9,
-                Name = "Cranberry Juice",
-                Volume = 80,
-                Price = 1.8m,
-            };
+            Ingredient i7 = new 
+                (7, "Cream", 20,
+                0.5m);
 
 
-            Ingredient i10 = new Ingredient()
-            {
-                Id = 10,
-                Name = "Blue Curacao Liqueur",
-                Volume = 40,
-                Price = 3.8m,
-            };
+            Ingredient i8 = new 
+                (8, "Peach Liqueur", 
+                40, 3.8m);
 
-            Ingredient i11 = new Ingredient()
-            {
-                Id = 11,
-                Name = "Lemon Juice",
-                Volume = 20,
-                Price = 0.6m,
-            };
+            Ingredient i9 = new 
+                (9, "Cranberry Juice", 
+                80, 1.8m);
+
+            Ingredient i10 = new 
+                (10, "Blue Curacao Liqueur",
+                40, 3.8m);
+
+            Ingredient i11 = new
+                Ingredient(11, "Lemon Juice",
+                20, 0.6m);
+
 
             p.Add(i1);
             p.Add(i2); p.Add(i3);
@@ -108,11 +67,6 @@ namespace EventSourcingDrinkAlcoholFun.Infrastructure.DummyData
             p.Add(i6); p.Add(i7);
             p.Add(i8); p.Add(i9);
             p.Add(i10); p.Add(i11);
-
-            foreach (var item in p)
-            {
-                item.CreatedAt = DateTime.Now;
-            }
 
             return p;
 
