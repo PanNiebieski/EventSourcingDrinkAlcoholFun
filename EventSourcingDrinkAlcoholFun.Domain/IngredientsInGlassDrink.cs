@@ -21,8 +21,8 @@ namespace EventSourcingDrinkAlcoholFun.Domain
 
         public int IngredientId { get; set; }
 
-        public Drink Drink { get; private set; }
+        public Drink Drink { get;  set; }
 
-        public Ingredient Ingredient { get; private set; }
+        public Ingredient Ingredient { get;  set; }
     }
 }

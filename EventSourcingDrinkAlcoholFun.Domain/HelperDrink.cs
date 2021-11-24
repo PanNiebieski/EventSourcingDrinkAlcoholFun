@@ -14,6 +14,7 @@
             (this Drink drink, Ingredient ingredient)
         {
             drink.Ingredients.Remove(ingredient);
+            DeleteFlags.AddDeleteFlag(drink.Id, ingredient.Id);
             return drink;
         }
 

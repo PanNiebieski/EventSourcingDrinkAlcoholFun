@@ -1,4 +1,5 @@
-﻿using EventSourcingDrinkAlcoholFun.Core;
+﻿using Dapper;
+using EventSourcingDrinkAlcoholFun.Core;
 using EventSourcingDrinkAlcoholFun.Infrastructure.DataAccess.Dapper.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,6 +33,13 @@ namespace EventSourcingDrinkAlcoholFun.Infrastructure.DataAccess.Dapper
             services.AddScoped<IDrinkRepository, DrinkRepository>();
             services.AddScoped<IIngredientRepository, IngredientRepository>();
             services.AddScoped<ITableManager, TableManager>();
+
+            SqlMapper.RemoveTypeMap(typeof(DateTimeOffset));
+            SqlMapper.AddTypeHandler(DateTimeHandler.Default);
+
+            SqlMapper.AddTypeHandler(new MySqlGuidTypeHandler());
+            SqlMapper.RemoveTypeMap(typeof(Guid));
+            SqlMapper.RemoveTypeMap(typeof(Guid?));
 
             return services;
         }

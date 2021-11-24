@@ -47,4 +47,15 @@ namespace EventSourcingDrinkAlcoholFun.Infrastructure.DataAccess.Dapper.Reposito
             return r;
         }
     }
+
+    //public class TempIngredient
+    //{
+    //    public int Id { get; set; }
+
+    //    public string Name { get; set; }
+
+    //    public int Volume { get; set; }
+
+    //    public decimal Price { get; set; }
+    //}
 }

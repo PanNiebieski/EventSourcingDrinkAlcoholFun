@@ -108,28 +108,31 @@ async Task ShowAllDrinksAsync(IDrinkRepository repostiory)
     if (list.Count == 0)
         WriteLine("There are no drinks");
 
+
     foreach (var drink in list)
     {
-        var table = new ConsoleTable("Id", "Status", "CreatedAt", "IngredientsCount", "PriceSum");
+        var table = new ConsoleTable
+            ("Id","Status       ","IngredientsCount", "PriceSum", "UId", "CreatedAt");
 
-        table.AddRow(drink.Id, drink.Status, drink.CreatedAt,
+        table.AddRow(drink.Id, drink.Status,
             drink.Ingredients.Count(),
-            drink.Ingredients.Sum(p => p.Price));
+            drink.Ingredients.Sum(p => p.Price), drink.UniqueId, drink.CreatedAt);
 
 
         if (drink.Ingredients.Count > 0)
         {
-            table.AddRow("", "", "", "", "");
-            table.AddRow("Id", "Name", "Volume", "Price", "");
+            table.AddRow("", "", "", "", "","");
+            table.AddRow("Id", "Name", "Volume", "Price", "","");
         }
 
         foreach (var ingredient in drink.Ingredients)
         {
-            table.AddRow(ingredient.Id, ingredient.Name, ingredient.Volume, ingredient.Price, "");
+            table.AddRow(ingredient.Id, ingredient.Name, ingredient.Volume, ingredient.Price, "","");
         }
         table.Write(Format.MarkDown);
+        ChangeColor();
     }
-
+    ForegroundColor = ConsoleColor.Yellow;
     ReadKey();
 }
 
@@ -143,7 +146,7 @@ async Task CreateDrink(IDrinkRepository repostiory)
     await eventRepository.Save<DrinkAggregate>(drinkAggregate);
 
     WriteLine("You start to create a drink with ID: ");
-    //WriteLine(result.Id);
+    WriteLine(result.Id);
     ReadKey();
 }
 
@@ -199,7 +202,7 @@ async Task AddingIn(IDrinkRepository drinkRepository
                 var ing = ingidients.
                     FirstOrDefault(x => x.Id == inId);
 
-                d.Ingredients.Add(ing);
+                d.AddIngredient(ing);
 
                 await drinkRepository.UpdateAsync(d);
             }
@@ -254,7 +257,7 @@ async Task RemoveIn(IDrinkRepository drinkRepository)
                 var ing = ingidients.
                     FirstOrDefault(x => x.Id == inId);
 
-                d.Ingredients.Remove(ing);
+                d.RemoveIngredient(ing);
 
                 await drinkRepository.UpdateAsync(d);
             }
@@ -468,5 +471,12 @@ void WritePareError()
     ReadKey();
 }
 
+
+void ChangeColor()
+{
+    Random r = new Random();
+    int number = r.Next(7, 14);
+    ForegroundColor = (ConsoleColor)number;
+}
 
 
