@@ -20,9 +20,9 @@ namespace EventSourcingDrinkAlcoholFun.Domain
             return _delete;
         }
 
-        public static void Clear()
+        public static void Clear(int drinkid)
         {
-            _delete.Clear();
+            _delete = _delete.Where(k => k.drinkid != drinkid).ToList();
         }
     }
 

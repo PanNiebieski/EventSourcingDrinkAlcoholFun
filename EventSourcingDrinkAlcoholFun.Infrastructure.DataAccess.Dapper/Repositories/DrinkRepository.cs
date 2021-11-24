@@ -255,14 +255,18 @@ namespace EventSourcingDrinkAlcoholFun.Infrastructure.DataAccess.Dapper.Reposito
             {
                 var q3 = "DELETE FROM IngredientsInGlassDrink WHERE DrinkId=@DId AND IngredientId= @IId ;";
 
-                await connection.ExecuteAsync(q3,
-                new
+                if (item.drinkid == entity.Id)
                 {
-                    @DId = item.drinkid,
-                    @IId = item.ingredientid
-                });
+                    await connection.ExecuteAsync(q3,
+                    new
+                    {
+                        @DId = item.drinkid,
+                        @IId = item.ingredientid
+                    });
+                    DeleteFlags.Clear(entity.Id);
+                }
             }
-            DeleteFlags.Clear();
+   
         }
 
         //var r = await GetIngredientsInGlassDrink(connection);

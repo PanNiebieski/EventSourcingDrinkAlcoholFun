@@ -205,6 +205,12 @@ async Task AddingIn(IDrinkRepository drinkRepository
                 d.AddIngredient(ing);
 
                 await drinkRepository.UpdateAsync(d);
+
+                var aggr = await eventRepository.Get<DrinkAggregate>
+                    (AggregateKey.FromGuid(d.UniqueId));
+
+                aggr.AddedIngredient(d.UniqueId, ing);
+                await eventRepository.Save<DrinkAggregate>(aggr);
             }
         }
         else
@@ -260,6 +266,12 @@ async Task RemoveIn(IDrinkRepository drinkRepository)
                 d.RemoveIngredient(ing);
 
                 await drinkRepository.UpdateAsync(d);
+
+                var aggr = await eventRepository.Get<DrinkAggregate>
+                    (AggregateKey.FromGuid(d.UniqueId));
+
+                aggr.RemovedIngredient(d.UniqueId, ing);
+                await eventRepository.Save<DrinkAggregate>(aggr);
             }
         }
 
