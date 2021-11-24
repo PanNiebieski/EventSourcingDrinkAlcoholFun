@@ -140,10 +140,11 @@ async Task ShowAllDrinksAsync(IDrinkRepository repostiory)
 
 async Task CreateDrink(IDrinkRepository repostiory)
 {
+
     var newdrink = new Drink();
     DrinkAggregate drinkAggregate = new(newdrink);
 
-    var result = await repostiory.AddAsync(new Drink());
+    var result = await repostiory.AddAsync(newdrink);
 
     await eventRepository.Save<DrinkAggregate>(drinkAggregate);
 
