@@ -10,6 +10,13 @@
             return new AggregateKey() { Id = id};
         }
 
+        public static AggregateKey FromString
+    (string id)
+        {
+            return new AggregateKey() { Id = Guid.Parse(id) };
+        }
+
+
         public static Guid ToGuid
             (AggregateKey key)
         {

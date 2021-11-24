@@ -29,7 +29,7 @@ namespace EventSourcingDrinkAlcoholFun.Infrastructure.EventStore
 
             try
             {
-                var r = await connection.QueryAsync<EventTemp>
+                var r = await connection.QueryAsync<RawEventRecord>
                 (@"SELECT Id,Key_StreamId, Value_Data, AssemblyQualifiedName_Type, Version_SerialNumber,TimeStamp FROM EventsTable
                     WHERE Key_StreamId = @aggregateId and Version_SerialNumber > @Version;", new
                 {
@@ -92,14 +92,14 @@ namespace EventSourcingDrinkAlcoholFun.Infrastructure.EventStore
 
 
 
-        public async Task<List<EventTemp>> GetRawAllEvents()
+        public async Task<List<RawEventRecord>> GetRawAllEvents()
         {
             using var connection = new SqliteConnection
                 (_eventstoreContext.ConnectionString);
 
             try
             {
-                var r = await connection.QueryAsync<EventTemp>
+                var r = await connection.QueryAsync<RawEventRecord>
                 (@"SELECT Id,Key_StreamId, Value_Data, AssemblyQualifiedName_Type, Version_SerialNumber,TimeStamp FROM EventsTable
                     ");
 
@@ -111,6 +111,50 @@ namespace EventSourcingDrinkAlcoholFun.Infrastructure.EventStore
             }
 
          }
+
+        public async Task<List<AggregatePerDomainEvent>> ReadAllStreams()
+        {
+            using var connection = new SqliteConnection
+                (_eventstoreContext.ConnectionString);
+
+            try
+            {
+                var r = await connection.QueryAsync<RawEventRecord>
+                (@"SELECT Id,Key_StreamId, Value_Data, AssemblyQualifiedName_Type, Version_SerialNumber,TimeStamp FROM EventsTable
+                   ", new
+                {
+  
+                });
+
+                List<AggregatePerDomainEvent> de = new List<AggregatePerDomainEvent>();
+                var groupedbyKey = r.GroupBy(k => k.Key_StreamId);
+                
+                foreach (var listevents in groupedbyKey)
+                {
+                    AggregatePerDomainEvent e = new();
+                    e.AggregateId = AggregateKey.FromString(listevents.Key);
+
+                    foreach (var item in listevents)
+                    {
+                        Assembly asm = typeof(DomainEvent).Assembly;
+                        Type type = TypeRecon.ReconstructType(item.AssemblyQualifiedName_Type, true, asm);
+
+                        var domain = JsonConvert.
+                            DeserializeObject(item.Value_Data, type);
+
+                        e.Events.Add(domain as DomainEvent);
+                    }
+
+                    de.Add(e);
+                }
+
+                return de;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
 
     }
 

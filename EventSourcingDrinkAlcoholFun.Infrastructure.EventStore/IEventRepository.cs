@@ -41,7 +41,7 @@ namespace EventSourcingDrinkAlcoholFun.Infrastructure.EventStore
 
                 if (check.Any())
                 {
-                    //throw new ConcurrencyException(aggregate.Key);
+                    throw new ConcurrencyException(aggregate.Key);
                 }
 
             }
@@ -66,7 +66,7 @@ namespace EventSourcingDrinkAlcoholFun.Infrastructure.EventStore
             var events = await _eventStore.ReadEventStream(id, -1);
             if (!events.Any())
             {
-                //throw new AggregateNotFoundException(id);
+                throw new AggregateNotFoundException(id);
             }
             
             aggregate.LoadFromHistory(events);
@@ -74,9 +74,27 @@ namespace EventSourcingDrinkAlcoholFun.Infrastructure.EventStore
         }
 
 
-        public async Task<List<EventTemp>> GetRawAllEvents()
+        public async Task<List<RawEventRecord>> GetRawAllEvents()
         {
             return await _eventStore.GetRawAllEvents();
+        }
+
+        public async Task<List<T>> GetAll<T>() where T : AggregateRoot
+        {
+
+            List<T> result = new List<T>();
+
+            var eventsPerAggregate = await _eventStore.ReadAllStreams();
+
+            foreach (var item in eventsPerAggregate)
+            {
+                var aggregate = AggregateFactory.CreateAggregate<T>();
+                aggregate.LoadFromHistory(item.Events);
+
+                result.Add(aggregate);
+            }
+
+            return result;
         }
     }
 }

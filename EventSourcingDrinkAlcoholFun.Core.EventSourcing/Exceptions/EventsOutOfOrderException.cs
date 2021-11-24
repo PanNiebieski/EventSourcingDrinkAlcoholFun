@@ -1,30 +1,13 @@
-﻿using System.Runtime.Serialization;
+﻿using EventSourcingDrinkAlcoholFun.Domain.Events;
+using System.Runtime.Serialization;
 
 namespace EventSourcingDrinkAlcoholFun.Core.EventSourcing
 {
     [Serializable]
-    internal class EventsOutOfOrderException : Exception
+    public class EventsOutOfOrderException : System.Exception
     {
-        private object key;
-
-        public EventsOutOfOrderException()
-        {
-        }
-
-        public EventsOutOfOrderException(object key)
-        {
-            this.key = key;
-        }
-
-        public EventsOutOfOrderException(string? message) : base(message)
-        {
-        }
-
-        public EventsOutOfOrderException(string? message, Exception? innerException) : base(message, innerException)
-        {
-        }
-
-        protected EventsOutOfOrderException(SerializationInfo info, StreamingContext context) : base(info, context)
+        public EventsOutOfOrderException(AggregateKey id)
+            : base(string.Format("Eventstore gave event for aggregate {0} out of order", id))
         {
         }
     }

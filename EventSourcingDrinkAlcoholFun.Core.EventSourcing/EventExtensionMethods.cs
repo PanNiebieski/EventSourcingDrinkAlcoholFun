@@ -5,7 +5,7 @@ using EventSourcingDrinkAlcoholFun.DomainEvents.Drinks;
 
 namespace EventSourcingDrinkAlcoholFun.Core.EventSourcing
 {
-    public static class EventHExtensionMethods
+    public static class EventExtensionMethods
     {
         public static Drink When(this Drink? drink, DomainEvent @event)
         {

@@ -33,7 +33,7 @@
   <ItemGroup>
     <ProjectReference Include="..\EventSourcingDrinkAlcoholFun.Infrastructure.DataAccess.Dapper\EventSourcingDrinkAlcoholFun.Infrastructure.DataAccess.Dapper.csproj" />
     <ProjectReference Include="..\EventSourcingDrinkAlcoholFun.Infrastructure.EventStore\EventSourcingDrinkAlcoholFun.Infrastructure.EventStore.csproj" />
-    <ProjectReference Include="..\EventSourcingDrinkAlcoholFun.Infrastructure\EventSourcingDrinkAlcoholFun.Infrastructure.DataAccess.csproj" />
+    <ProjectReference Include="..\EventSourcingDrinkAlcoholFun.Infrastructure\EventSourcingDrinkAlcoholFun.Infrastructure.DataAccess.EF.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -37,16 +37,17 @@ while (command != 'q')
     WriteLine("2. Start the process of creating a Drink");
     WriteLine("3. Add the ingredient to the drink");
     WriteLine("4. Remove the ingredient from the drink");
-    WriteLine("5. Complete the process of creating a given drink");
+    WriteLine("5. Change message towho in drink");
+    WriteLine("6. Complete the process of creating a given drink");
     WriteLine("=========================================");
     ForegroundColor = ConsoleColor.Red;
-    WriteLine("6. Clear the database [KAC EFEKT]");
+    WriteLine("7. Clear the database [KAC EFEKT]");
     ForegroundColor = ConsoleColor.Yellow;
     WriteLine("=========================================");
-    WriteLine("7. Show me events on na drink");
-    WriteLine("8. Projection from the stream of events on the drinks");
-    WriteLine("9. Travel in time with a specific drink");
-    WriteLine("0. Do an Audit of the event stream on the drinks");
+    WriteLine("8. Show me events on na drink");
+    WriteLine("9. Projection from the stream of events on the drinks");
+    WriteLine("0. Travel in time with a specific drink");
+    WriteLine("a. Do an Audit of the event stream on the drinks");
 
     ForegroundColor = ConsoleColor.Gray;
     WriteLine("d. Demo of Aggreggates");
@@ -64,24 +65,25 @@ while (command != 'q')
         await AddingIn(drinkRepository, ingredientRepository);
     else if (command == '4')
         await RemoveIn(drinkRepository);
-    else if (command == '5')
-        await EndDrink(drinkRepository);
     else if (command == '6')
-        await ClearDatabase(tableManager);
+        await EndDrink(drinkRepository);
+    else if (command == '5')
+        await ChangeToWho(drinkRepository);
     else if (command == '7')
-        await ShowEventsOnTheDrinks();
+        await ClearDatabase(tableManager);
     else if (command == '8')
-        await RestoreDataBaseFromEvents();
+        await ShowEventsOnTheDrinks();
     else if (command == '9')
-        await TimeTravel();
+        await RestoreDataBaseFromEvents();
     else if (command == '0')
+        await TimeTravel();
+    else if (command == 'a')
     {
 
     }
     else if (command == 'd')
     {
         var ingidients = await ingredientRepository.GetAllAsync();
-
 
         var newdrink = new Drink();
         DrinkAggregate drinkAggregate = new(newdrink);
@@ -315,6 +317,17 @@ async Task ClearDatabase(ITableManager tableManager)
     }
 }
 
+async Task ShowEventsOnTheDrinks2()
+{
+    var aggregates = await eventRepository.GetAll<DrinkAggregate>();
+
+    foreach (var aggregate in aggregates)
+    {
+    
+    }
+}
+
+
 async Task ShowEventsOnTheDrinks()
 {
     var rawevents = await eventRepository.GetRawAllEvents();
@@ -377,16 +390,16 @@ async Task RestoreDataBaseFromEvents()
         }
         else
         {
-            //WriteLine("Press 'y' if you want to do updated base on projection");
-            //if (ReadKey().KeyChar == 'y')
-            //{
-            //    check.Ingredients = drinkAgg.Drink.Ingredients;
-            //    check.ToWho = drinkAgg.Drink.ToWho;
-            //    check.Status = drinkAgg.Drink.Status;
+            WriteLine("Press 'y' if you want to do updated base on projection");
+            if (ReadKey().KeyChar == 'y')
+            {
+                check.Ingredients = drinkAgg.Drink.Ingredients;
+                check.ToWho = drinkAgg.Drink.ToWho;
+                check.Status = drinkAgg.Drink.Status;
 
-            //    await drinkRepository.UpdateAsync(drinkAgg.Drink);
-            //    WriteLine($"Updated projection {drinkAgg.Drink.UniqueId}");
-            //}
+                await drinkRepository.UpdateAsync(drinkAgg.Drink);
+                WriteLine($"Updated projection {drinkAgg.Drink.UniqueId}");
+            }
         }
     }
     ReadKey();
@@ -475,6 +488,62 @@ async Task TimeTravel()
 
 
 }
+
+async Task ChangeToWho(IDrinkRepository drinkRepositoryy)
+{
+    WriteLine("Enter the number of the drink to be modified");
+    string s = ReadLine();
+    int id;
+    if (int.TryParse(s, out id))
+    {
+        var d = await drinkRepository.GetByIdAsync(id);
+
+        if (d != null && d.Status == DrinkStatus.Creating)
+        {
+            WriteLine("");
+            WriteLine("Here are all information about this drink: ");
+            var table1 =
+                new ConsoleTable
+                ("Id", "ToWho      ", "UniqueId");
+
+            table1.AddRow(d.Id, d.ToWho, d.UniqueId);
+
+            table1.Write(Format.Alternative);
+            WriteLine("");
+            WriteLine("Do you want to changed note about to ToWho");
+            WriteLine("To Who is this drink?");
+            WriteLine("Enter an numeric character to cancel");
+
+            string inIdstring = ReadLine();
+
+            if (!int.TryParse(inIdstring, out _))
+            {
+                var oldtoWho = d.ToWho;
+                d.ChangeToWho(inIdstring);
+
+                await drinkRepository.UpdateAsync(d);
+
+                var aggr = await eventRepository.Get<DrinkAggregate>
+                    (AggregateKey.FromGuid(d.UniqueId));
+
+                aggr.ToWhoChanged(d.UniqueId,d.ToWho,oldtoWho);
+                await eventRepository.Save<DrinkAggregate>(aggr);
+
+
+            }
+
+        }
+        else
+        {
+            WriteLine("Drink with this ID does not exist");
+            WriteLine("OR");
+            WriteLine("The drink is already finished");
+            ReadLine();
+        }
+
+    }
+}
+
 
 
 void WritePareError()

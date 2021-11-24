@@ -4,28 +4,10 @@ using System.Runtime.Serialization;
 namespace EventSourcingDrinkAlcoholFun.Core.EventSourcing
 {
     [Serializable]
-    internal class ConcurrencyException : Exception
+    public class ConcurrencyException : System.Exception
     {
-        private AggregateKey key;
-
-        public ConcurrencyException()
-        {
-        }
-
-        public ConcurrencyException(AggregateKey key)
-        {
-            this.key = key;
-        }
-
-        public ConcurrencyException(string? message) : base(message)
-        {
-        }
-
-        public ConcurrencyException(string? message, Exception? innerException) : base(message, innerException)
-        {
-        }
-
-        protected ConcurrencyException(SerializationInfo info, StreamingContext context) : base(info, context)
+        public ConcurrencyException(AggregateKey id)
+            : base(string.Format("A different version than expected was found in aggregate {0}", id))
         {
         }
     }

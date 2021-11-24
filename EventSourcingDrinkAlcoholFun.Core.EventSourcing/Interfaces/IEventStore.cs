@@ -14,7 +14,9 @@ namespace EventSourcingDrinkAlcoholFun.Core.EventSourcing.Interfaces
         Task<List<DomainEvent>> ReadEventStream(AggregateKey aggregateId,
             int fromVersion);
 
-        Task<List<EventTemp>> GetRawAllEvents();
+        Task<List<RawEventRecord>> GetRawAllEvents();
+
+        Task<List<AggregatePerDomainEvent>> ReadAllStreams();
 
     }
 }

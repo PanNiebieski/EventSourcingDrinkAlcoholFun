@@ -3,28 +3,10 @@
 namespace EventSourcingDrinkAlcoholFun.Core.EventSourcing
 {
     [Serializable]
-    internal class MissingParameterLessConstructorException : Exception
+    public class MissingParameterLessConstructorException : System.Exception
     {
-        private Type type;
-
-        public MissingParameterLessConstructorException()
-        {
-        }
-
         public MissingParameterLessConstructorException(Type type)
-        {
-            this.type = type;
-        }
-
-        public MissingParameterLessConstructorException(string? message) : base(message)
-        {
-        }
-
-        public MissingParameterLessConstructorException(string? message, Exception? innerException) : base(message, innerException)
-        {
-        }
-
-        protected MissingParameterLessConstructorException(SerializationInfo info, StreamingContext context) : base(info, context)
+            : base(string.Format("{0} has no constructor without paramerters. This can be either public or private", type.FullName))
         {
         }
     }

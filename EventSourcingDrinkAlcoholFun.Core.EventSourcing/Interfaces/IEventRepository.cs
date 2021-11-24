@@ -15,7 +15,9 @@ namespace EventSourcingDrinkAlcoholFun.Core.EventSourcing.Interfaces
         Task<T> Get<T>(AggregateKey aggregateId) where T : AggregateRoot;
 
 
-        Task<List<EventTemp>> GetRawAllEvents();
+        Task<List<RawEventRecord>> GetRawAllEvents();
+
+        Task<List<T>> GetAll<T>() where T : AggregateRoot;
 
     }
 }

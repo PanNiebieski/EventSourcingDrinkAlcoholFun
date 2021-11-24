@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EventSourcingDrinkAlcoholFun.Core.EventSourcing.Interfaces
 {
-    public class EventTemp
+    public class RawEventRecord
     {
 
         public int Id { get; set; }
@@ -20,7 +20,7 @@ namespace EventSourcingDrinkAlcoholFun.Core.EventSourcing.Interfaces
 
         public override bool Equals(object other)
         {
-            EventTemp mod = other as EventTemp;
+            RawEventRecord mod = other as RawEventRecord;
 
             if (mod != null)
             {

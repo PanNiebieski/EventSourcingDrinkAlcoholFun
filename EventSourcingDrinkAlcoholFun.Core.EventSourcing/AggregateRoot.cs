@@ -41,7 +41,7 @@ namespace EventSourcingDrinkAlcoholFun.Core.EventSourcing
             foreach (var @event in history)
             {
                 if (@event.Version_SerialNumber != Version_SerialNumber)
-                    throw new EventsOutOfOrderException(@event.Version_SerialNumber);
+                    throw new EventsOutOfOrderException(@event.Key_StreamId);
 
                 
                 ApplyChangeBase(@event, false);

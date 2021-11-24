@@ -11,11 +11,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{78CBA9D8-0
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{C07A8CD8-10A0-47C5-90F9-3256976FFA97}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventSourcingDrinkAlcoholFun.Infrastructure.DataAccess", "EventSourcingDrinkAlcoholFun.Infrastructure\EventSourcingDrinkAlcoholFun.Infrastructure.DataAccess.csproj", "{1CB658B1-6D5B-4462-82D1-DA16D23C1392}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventSourcingDrinkAlcoholFun.Infrastructure.DataAccess.EF", "EventSourcingDrinkAlcoholFun.Infrastructure\EventSourcingDrinkAlcoholFun.Infrastructure.DataAccess.EF.csproj", "{1CB658B1-6D5B-4462-82D1-DA16D23C1392}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventSourcingDrinkAlcoholFun.Core", "EventSourcingDrinkAlcoholFun.Core\EventSourcingDrinkAlcoholFun.Core.csproj", "{64131CFA-D8B0-4703-BFAD-2581A2DC8462}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3929D4D9-7D37-416B-8FB5-B45919BB36FE}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Solution Items", "_Solution Items", "{3929D4D9-7D37-416B-8FB5-B45919BB36FE}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
@@ -32,6 +32,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventSourcingDrinkAlcoholFun.Core.EventSourcing", "EventSourcingDrinkAlcoholFun.Core.EventSourcing\EventSourcingDrinkAlcoholFun.Core.EventSourcing.csproj", "{14A2ED64-65EA-4277-B8E1-1FD7E47A088F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventSourcingDrinkAlcoholFun.Infrastructure.DataAccess.Dapper", "EventSourcingDrinkAlcoholFun.Infrastructure.DataAccess.Dapper\EventSourcingDrinkAlcoholFun.Infrastructure.DataAccess.Dapper.csproj", "{54B2CF8A-6D03-4D18-B6C5-4752B894E925}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataAccess", "DataAccess", "{C839FFCB-1ECD-46F3-8C3F-82F08E203C4E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,14 +79,15 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{042B02A8-21FC-41B9-8B3A-BA49123C28AF} = {A7C4AA15-DE61-4BB3-A8D9-5B4213552305}
-		{1CB658B1-6D5B-4462-82D1-DA16D23C1392} = {C07A8CD8-10A0-47C5-90F9-3256976FFA97}
+		{1CB658B1-6D5B-4462-82D1-DA16D23C1392} = {C839FFCB-1ECD-46F3-8C3F-82F08E203C4E}
 		{64131CFA-D8B0-4703-BFAD-2581A2DC8462} = {3004034A-46A0-4D39-A383-59C0A4BC7244}
 		{971B0404-C5DC-409B-AC02-B08A77B1D54D} = {C07A8CD8-10A0-47C5-90F9-3256976FFA97}
 		{8B5C8236-CDAE-4A96-9F1E-09E2321A1AF5} = {A7C4AA15-DE61-4BB3-A8D9-5B4213552305}
 		{A7C4AA15-DE61-4BB3-A8D9-5B4213552305} = {78CBA9D8-03A3-4A21-A816-3CB567CE5686}
 		{3004034A-46A0-4D39-A383-59C0A4BC7244} = {78CBA9D8-03A3-4A21-A816-3CB567CE5686}
 		{14A2ED64-65EA-4277-B8E1-1FD7E47A088F} = {3004034A-46A0-4D39-A383-59C0A4BC7244}
-		{54B2CF8A-6D03-4D18-B6C5-4752B894E925} = {C07A8CD8-10A0-47C5-90F9-3256976FFA97}
+		{54B2CF8A-6D03-4D18-B6C5-4752B894E925} = {C839FFCB-1ECD-46F3-8C3F-82F08E203C4E}
+		{C839FFCB-1ECD-46F3-8C3F-82F08E203C4E} = {C07A8CD8-10A0-47C5-90F9-3256976FFA97}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {82EDA1B6-AF41-4107-927C-48514DCC3EFF}

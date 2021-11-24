@@ -4,28 +4,10 @@ using System.Runtime.Serialization;
 namespace EventSourcingDrinkAlcoholFun.Core.EventSourcing
 {
     [Serializable]
-    internal class AggregateNotFoundException : Exception
+    public class AggregateNotFoundException : System.Exception
     {
-        private AggregateKey id;
-
-        public AggregateNotFoundException()
-        {
-        }
-
         public AggregateNotFoundException(AggregateKey id)
-        {
-            this.id = id;
-        }
-
-        public AggregateNotFoundException(string? message) : base(message)
-        {
-        }
-
-        public AggregateNotFoundException(string? message, Exception? innerException) : base(message, innerException)
-        {
-        }
-
-        protected AggregateNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context)
+            : base(string.Format("Aggregate {0} was not found", id))
         {
         }
     }
