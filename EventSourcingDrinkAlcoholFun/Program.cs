@@ -58,9 +58,9 @@ while (command != 'q')
 
     ForegroundColor = ConsoleColor.Gray;
     WriteLine("=========================================");
-    WriteLine("d. Demo of Aggreggates 1");
-    WriteLine("f. Demo of Aggreggates 2");
-    WriteLine("g. Demo of Aggreggates 3");
+    WriteLine("d. Demo of Aggregates 1");
+    WriteLine("f. Demo of Aggregates 2");
+    WriteLine("g. Demo of Aggregates 3");
     WriteLine("=========================================");
     ForegroundColor = ConsoleColor.Red;
     WriteLine("p. Clear the EventStore");
