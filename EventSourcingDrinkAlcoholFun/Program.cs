@@ -3,6 +3,10 @@
 
 
 
+using EventSourcingDrinkAlcoholFun.DomainEvents;
+using EventSourcingDrinkAlcoholFun.DomainEvents.Drinks;
+using System.Collections.Generic;
+
 var builder = new ConfigurationBuilder()
     .SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile("appsettings.json");
@@ -28,6 +32,9 @@ var tableManager = serviceProvider
 var eventRepository = serviceProvider
     .GetService<IEventRepository>();
 
+var tableEventManager = serviceProvider
+    .GetService<IEventTableManager>();
+
 char command = 'a';
 
 while (command != 'q')
@@ -50,7 +57,15 @@ while (command != 'q')
     WriteLine("a. Do an Audit of the event stream on the drinks");
 
     ForegroundColor = ConsoleColor.Gray;
-    WriteLine("d. Demo of Aggreggates");
+    WriteLine("=========================================");
+    WriteLine("d. Demo of Aggreggates 1");
+    WriteLine("f. Demo of Aggreggates 2");
+    WriteLine("g. Demo of Aggreggates 3");
+    WriteLine("=========================================");
+    ForegroundColor = ConsoleColor.Red;
+    WriteLine("p. Clear the EventStore");
+    ForegroundColor = ConsoleColor.White;
+    WriteLine("=========================================");
     WriteLine("q. Exit");
 
     ForegroundColor = ConsoleColor.Yellow;
@@ -78,9 +93,7 @@ while (command != 'q')
     else if (command == '0')
         await TimeTravel();
     else if (command == 'a')
-    {
-
-    }
+        await DoAudit();
     else if (command == 'd')
     {
         var ingidients = await ingredientRepository.GetAllAsync();
@@ -98,6 +111,51 @@ while (command != 'q')
 
         await eventRepository.Save<DrinkAggregate>(drinkAggregate);
     }
+    else if (command == 'f')
+    {
+        var ingidients = await ingredientRepository.GetAllAsync();
+
+        var newdrink = new Drink();
+        DrinkAggregate drinkAggregate = new(newdrink);
+        drinkAggregate.AddedIngredient(newdrink.UniqueId, ingidients[3]);
+        drinkAggregate.RemovedIngredient(newdrink.UniqueId, ingidients[3]);
+        drinkAggregate.AddedIngredient(newdrink.UniqueId, ingidients[5]);
+        drinkAggregate.AddedIngredient(newdrink.UniqueId, ingidients[9]);
+        drinkAggregate.AddedIngredient(newdrink.UniqueId, ingidients[10]);
+        drinkAggregate.ToWhoChanged(newdrink.UniqueId, "Kamil", "");
+        drinkAggregate.ToWhoChanged(newdrink.UniqueId, "Stefan", "Kamil");
+        drinkAggregate.GlassDone(newdrink.UniqueId);
+
+        var result = await drinkRepository.AddAsync(drinkAggregate.Drink);
+
+        await eventRepository.Save<DrinkAggregate>(drinkAggregate);
+    }
+    else if (command == 'g')
+    {
+        var ingidients = await ingredientRepository.GetAllAsync();
+
+        var newdrink = new Drink();
+        DrinkAggregate drinkAggregate = new(newdrink);
+        drinkAggregate.AddedIngredient(newdrink.UniqueId, ingidients[0]);
+        drinkAggregate.AddedIngredient(newdrink.UniqueId, ingidients[2]);
+        drinkAggregate.AddedIngredient(newdrink.UniqueId, ingidients[4]);
+        drinkAggregate.ToWhoChanged(newdrink.UniqueId, "Anna", "");
+        drinkAggregate.ToWhoChanged(newdrink.UniqueId, "Jagoda", "Anna");
+        drinkAggregate.GlassDone(newdrink.UniqueId);
+
+        var result = await drinkRepository.AddAsync(drinkAggregate.Drink);
+
+        await eventRepository.Save<DrinkAggregate>(drinkAggregate);
+    }
+    else if (command == 'p')
+    {
+        WriteLine("Press 'y' if you want that");
+        if (ReadKey().KeyChar == 'y')
+        {
+            tableEventManager.DeleteAllRecordsInTables();
+        }
+    }
+
 
     Clear();
 }
@@ -114,11 +172,11 @@ async Task ShowAllDrinksAsync(IDrinkRepository repostiory)
     foreach (var drink in list)
     {
         var table = new ConsoleTable
-            ("Id","Status       ","IngredientsCount", "PriceSum", "UId", "CreatedAt");
+            ("Id","Status                   ","ToWho","IngredientsCount", "PriceSum", "UId");
 
-        table.AddRow(drink.Id, drink.Status,
+        table.AddRow(drink.Id, drink.Status, drink.ToWho,
             drink.Ingredients.Count(),
-            drink.Ingredients.Sum(p => p.Price), drink.UniqueId, drink.CreatedAt);
+            drink.Ingredients.Sum(p => p.Price), drink.UniqueId);
 
 
         if (drink.Ingredients.Count > 0)
@@ -318,20 +376,105 @@ async Task ClearDatabase(ITableManager tableManager)
     }
 }
 
-async Task ShowEventsOnTheDrinks2()
+async Task DoAudit()
 {
     var aggregates = await eventRepository.GetAll<DrinkAggregate>();
 
+    Console.WriteLine("Here are the Removed Ingredients after it was added earlier");
+    Console.WriteLine("This information is possible thanks to the events");
+    Console.WriteLine("");
+
+    Dictionary<Ingredient, int> howManyTimetWasRemoved = 
+        new Dictionary<Ingredient, int>();
+
+
+    List<Ingredient> nextIngredientAfterVodka = new List<Ingredient>();
+    bool flag = false;
+
+
     foreach (var aggregate in aggregates)
     {
-    
+        flag = false;
+
+        foreach (var item in aggregate.Changes)
+        {
+            if (item is RemovedIngredientEvent)
+            {
+                RemovedIngredientEvent remove 
+                    = (RemovedIngredientEvent)item;
+
+                if (howManyTimetWasRemoved.
+                    ContainsKey(remove.Data.Ingredient))
+                {
+                    howManyTimetWasRemoved
+                        [remove.Data.Ingredient]++;
+                } else
+                {
+                    howManyTimetWasRemoved.Add
+                        (remove.Data.Ingredient, 1);
+                }
+
+                if (remove.Data.Ingredient.Id == 1)
+                {
+                    flag = false;
+                    nextIngredientAfterVodka.Clear();
+                }
+            }
+
+            if (item is AddedIngredientEvent)
+            {
+                AddedIngredientEvent added
+                    = (AddedIngredientEvent) item;
+
+                if (flag == true 
+                    && added.Data.Ingredient.Id != 1)
+                {
+                    nextIngredientAfterVodka.Add(added.Data.Ingredient);
+                }
+
+                if (added.Data.Ingredient.Id == 1)
+                {
+                    flag = true;
+                }
+            }
+        }
+
+ 
     }
+
+
+
+
+    var orderby = howManyTimetWasRemoved.OrderBy(x => x.Value);
+
+    ForegroundColor = ConsoleColor.Red;
+    foreach (var di in orderby)
+    {
+        Console.WriteLine($"\t -> {di.Key.Name} - It has been removed so many times - {di.Value}");
+    }
+
+    ForegroundColor = ConsoleColor.Yellow;
+
+    Console.WriteLine("");
+    Console.WriteLine("Here are the most choosed Ingredient by you after you added vodka in the drink");
+    Console.WriteLine("This information is possible thanks to the events");
+
+    ForegroundColor = ConsoleColor.Green;
+    foreach (var item in nextIngredientAfterVodka)
+    {
+        Console.WriteLine($"\t -> {item.Name}");
+    }
+
+    Console.ReadKey();
 }
 
 
 async Task ShowEventsOnTheDrinks()
 {
     var rawevents = await eventRepository.GetRawAllEvents();
+
+    if (rawevents.Count == 0)
+        WriteLine("No events in Event Store");
 
     var grouped = rawevents.GroupBy(k => k.Key_StreamId);
 
@@ -560,5 +703,3 @@ void ChangeColor()
     int number = r.Next(7, 14);
     ForegroundColor = (ConsoleColor)number;
 }
-
-

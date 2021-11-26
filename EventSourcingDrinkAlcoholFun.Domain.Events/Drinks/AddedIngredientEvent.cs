@@ -26,8 +26,11 @@ namespace EventSourcingDrinkAlcoholFun.DomainEvents
         }
     }
 
+    //TODO: Change to IngredientId
     public class AddedIngredientEventData : DomainEventData
     {
         public Ingredient Ingredient { get; set; }
+
+        //public int IngredientId { get; set; }
     }
 }

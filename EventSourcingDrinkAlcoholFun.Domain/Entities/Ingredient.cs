@@ -38,11 +38,25 @@ namespace EventSourcingDrinkAlcoholFun.Domain
         [NotMapped]
         public bool ToInsert { get; set; }
 
-
-
-
         [JsonIgnore]
         public ICollection<Drink> UseInDrinks { get; set; }
+
+        //public int CompareTo(Ingredient? other)
+        //{
+        //    // return other.Salary.CompareTo(this.Salary);
+        //    if (this. < other.Salary)
+        //    {
+        //        return 1;
+        //    }
+        //    else if (this.Salary > other.Salary)
+        //    {
+        //        return -1;
+        //    }
+        //    else
+        //    {
+        //        return 0;
+        //    }
+        //}
 
         public bool Equals(Ingredient? other)
         {
@@ -53,6 +67,11 @@ namespace EventSourcingDrinkAlcoholFun.Domain
                 return Id == mod.Id;
             }
             return base.Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Id.GetHashCode();
         }
     }
 

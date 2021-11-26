@@ -37,6 +37,7 @@ namespace EventSourcingDrinkAlcoholFun.Infrastructure.DataAccess.Dapper.Reposito
             var r1 = await connection
                 .QueryAsync<int>(q, entity);
 
+            entity.Id = r1.FirstOrDefault();
 
             foreach (var item in entity.Ingredients)
             {
@@ -56,7 +57,7 @@ namespace EventSourcingDrinkAlcoholFun.Infrastructure.DataAccess.Dapper.Reposito
 
             }
 
-            entity.Id = r1.FirstOrDefault();
+           
             return entity;
         }
 

@@ -11,8 +11,4 @@
     <ProjectReference Include="..\EventSourcingDrinkAlcoholFun.Domain\EventSourcingDrinkAlcoholFun.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Entties\" />
-  </ItemGroup>
-
 </Project>

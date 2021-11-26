@@ -25,7 +25,7 @@ namespace EventSourcingDrinkAlcoholFun.Infrastructure.EventStore
 
             services.AddScoped<IEventStore, SqlLiteEventStore>();
             services.AddScoped<IEventRepository, EventRepository>();
-
+            services.AddScoped<IEventTableManager, EventTableManager>();
 
             return services;
         }

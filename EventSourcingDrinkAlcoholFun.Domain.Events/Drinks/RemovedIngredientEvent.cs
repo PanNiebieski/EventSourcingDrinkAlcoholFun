@@ -10,7 +10,7 @@ namespace EventSourcingDrinkAlcoholFun.DomainEvents.Drinks
 {
     public class RemovedIngredientEvent : DomainEvent
     {
-        public override int Type => 3;
+        public override int Type => 1;
         public new RemovedIngredientEventData Data { get; init; } 
             = new RemovedIngredientEventData();
 
@@ -31,8 +31,11 @@ namespace EventSourcingDrinkAlcoholFun.DomainEvents.Drinks
         }
     }
 
+    //TODO: Change to IngredientId
     public class RemovedIngredientEventData : DomainEventData
     {
         public Ingredient Ingredient { get; set; }
+
+        //public int IngredientId { get; set; }
     }
 }
