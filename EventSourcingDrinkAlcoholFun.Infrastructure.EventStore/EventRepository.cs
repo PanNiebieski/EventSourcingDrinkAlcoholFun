@@ -50,8 +50,6 @@ namespace EventSourcingDrinkAlcoholFun.Infrastructure.EventStore
 
             foreach (var @event in aggregate.GetUncommittedChanges())
             {
-                //@event.Version_SerialNumber = 
-                //    aggregate.LoadedVersion_SerialNumber + i;
                 await _eventStore.Save(@event);
             }
 

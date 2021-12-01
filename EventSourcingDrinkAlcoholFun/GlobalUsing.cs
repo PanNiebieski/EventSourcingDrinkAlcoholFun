@@ -11,3 +11,8 @@ global using EventSourcingDrinkAlcoholFun.Core.EventSourcing.Interfaces;
 global using EventSourcingDrinkAlcoholFun.Core.EventSourcing;
 global using EventSourcingDrinkAlcoholFun.Domain.Events;
 global using EventSourcingDrinkAlcoholFun.Infrastructure.DataAccess.Dapper;
+
+
+global  using EventSourcingDrinkAlcoholFun.DomainEvents;
+global  using EventSourcingDrinkAlcoholFun.DomainEvents.Drinks;
+global  using System.Collections.Generic;

@@ -12,11 +12,14 @@ namespace EventSourcingDrinkAlcoholFun.Core.EventSourcing
         {
             try
             {
-                return (T)Activator.CreateInstance(typeof(T), true);
+                return (T)Activator.CreateInstance
+                    (typeof(T), true);
             }
             catch (MissingMethodException)
             {
-                throw new MissingParameterLessConstructorException(typeof(T));
+                throw new 
+                    MissingParameterLessConstructorException
+                    (typeof(T));
             }
         }
     }

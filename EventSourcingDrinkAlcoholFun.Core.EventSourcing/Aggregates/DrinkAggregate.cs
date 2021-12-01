@@ -19,8 +19,6 @@ namespace EventSourcingDrinkAlcoholFun.Core.EventSourcing
             Drink = Drink.When(@event);
         }
 
-
-
         public void RemovedIngredient(Guid id,Ingredient ingredient)
         {
             ApplyChangeBase(new RemovedIngredientEvent
@@ -45,11 +43,6 @@ namespace EventSourcingDrinkAlcoholFun.Core.EventSourcing
             ApplyChangeBase(new GlassDoneEvent(id, Version_SerialNumber), true);
         }
 
-        //protected override void ReverseChange(DomainEvent @event)
-        //{
-        //    Drink = Drink.DidNotWhen(@event);
-        //}
-
         public DrinkAggregate(Drink cc)
         {
             var c = new EmptyGlassInitializedEvent(cc.UniqueId);
@@ -61,6 +54,5 @@ namespace EventSourcingDrinkAlcoholFun.Core.EventSourcing
         {
 
         }
-    
     }
 }

@@ -1,12 +1,4 @@
 ﻿
-
-
-
-
-using EventSourcingDrinkAlcoholFun.DomainEvents;
-using EventSourcingDrinkAlcoholFun.DomainEvents.Drinks;
-using System.Collections.Generic;
-
 var builder = new ConfigurationBuilder()
     .SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile("appsettings.json");
@@ -384,11 +376,12 @@ async Task DoAudit()
     Console.WriteLine("This information is possible thanks to the events");
     Console.WriteLine("");
 
-    Dictionary<Ingredient, int> howManyTimetWasRemoved = 
+    Dictionary<Ingredient, int> dictItWasRemoved = 
         new Dictionary<Ingredient, int>();
 
 
-    List<Ingredient> nextIngredientAfterVodka = new List<Ingredient>();
+    Dictionary<Ingredient, int> dicAfterVodka = 
+        new Dictionary<Ingredient, int>();
     bool flag = false;
 
 
@@ -403,22 +396,33 @@ async Task DoAudit()
                 RemovedIngredientEvent remove 
                     = (RemovedIngredientEvent)item;
 
-                if (howManyTimetWasRemoved.
+                if (dictItWasRemoved.
                     ContainsKey(remove.Data.Ingredient))
                 {
-                    howManyTimetWasRemoved
+                    dictItWasRemoved
                         [remove.Data.Ingredient]++;
                 } else
                 {
-                    howManyTimetWasRemoved.Add
+                    dictItWasRemoved.Add
                         (remove.Data.Ingredient, 1);
                 }
 
                 if (remove.Data.Ingredient.Id == 1)
                 {
                     flag = false;
-                    nextIngredientAfterVodka.Clear();
+                    dicAfterVodka.Clear();
                 }
+
+                if (dicAfterVodka.
+                    ContainsKey(remove.Data.Ingredient))
+                {
+                    dicAfterVodka[remove.Data.Ingredient]
+                        = --dicAfterVodka
+                        [remove.Data.Ingredient];
+                }
+
+
+
             }
 
             if (item is AddedIngredientEvent)
@@ -429,7 +433,18 @@ async Task DoAudit()
                 if (flag == true 
                     && added.Data.Ingredient.Id != 1)
                 {
-                    nextIngredientAfterVodka.Add(added.Data.Ingredient);
+
+                    if (dicAfterVodka
+                        .ContainsKey(added.Data.Ingredient))
+                    {
+                        dicAfterVodka[added.Data.Ingredient] 
+                            = ++dicAfterVodka[added.Data.Ingredient];
+                    }
+                    else
+                    {
+                        dicAfterVodka
+                            .Add(added.Data.Ingredient, 1);
+                    }
                 }
 
                 if (added.Data.Ingredient.Id == 1)
@@ -443,14 +458,11 @@ async Task DoAudit()
     }
 
 
-
-
-    var orderby = howManyTimetWasRemoved.OrderBy(x => x.Value);
-
     ForegroundColor = ConsoleColor.Red;
-    foreach (var di in orderby)
+    foreach (var di in dictItWasRemoved.OrderByDescending(x => x.Value))
     {
-        Console.WriteLine($"\t -> {di.Key.Name} - It has been removed so many times - {di.Value}");
+        Console.WriteLine($"\t -> {di.Key.Name} " +
+            $"- It has been removed so many times - {di.Value}");
     }
 
     ForegroundColor = ConsoleColor.Yellow;
@@ -459,10 +471,17 @@ async Task DoAudit()
     Console.WriteLine("Here are the most choosed Ingredient by you after you added vodka in the drink");
     Console.WriteLine("This information is possible thanks to the events");
 
+
     ForegroundColor = ConsoleColor.Green;
-    foreach (var item in nextIngredientAfterVodka)
+
+
+
+    foreach (var item in dicAfterVodka.
+        OrderByDescending(k => k.Value))
     {
-        Console.WriteLine($"\t -> {item.Name}");
+        if (item.Value > 0)
+        Console.WriteLine
+                ($"\t -> {item.Key.Name} - How many times - {item.Value}");
     }
 
     Console.ReadKey();
@@ -511,17 +530,6 @@ async Task RestoreDataBaseFromEvents()
         {
             try
             {
-                var ing = await ingredientRepository.GetAllAsync();
-
-                List<Ingredient> ingredients = new List<Ingredient>();
-                foreach (var item in drinkAgg.Drink.Ingredients)
-                {
-                    var finded = ing.FirstOrDefault(k => k.Id == item.Id);
-                    if (finded != null)
-                        ingredients.Add(finded);
-                }
-
-                drinkAgg.Drink.Ingredients = ingredients;
                 await drinkRepository.AddAsync(drinkAgg.Drink);
                 WriteLine($"Added projection {drinkAgg.Drink.UniqueId}");
             }
@@ -604,11 +612,23 @@ async Task TimeTravel()
             {
                 try
                 {
+                    foreach (var i1 in drinkAgg.Drink.Ingredients)
+                    {
+                        foreach (var i2 in check.Ingredients)
+                        {
+                            if (i1.Id == i2.Id)
+                                i1.ToInsert = false;
+                        }
+                    }
+
                     check.Ingredients = drinkAgg.Drink.Ingredients;
                     check.ToWho = drinkAgg.Drink.ToWho;
                     check.Status = drinkAgg.Drink.Status;
 
                     await drinkRepository.UpdateAsync(check);
+                    //await drinkRepository.DeleteAsync(check);
+                    //await drinkRepository.AddAsync(check);
+
                     WriteLine($"Updated projection {drinkAgg.Drink.UniqueId}");
 
                     await eventRepository.Save(drinkAgg);
